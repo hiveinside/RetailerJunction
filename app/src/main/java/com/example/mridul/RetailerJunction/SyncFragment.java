@@ -66,9 +66,9 @@ public class SyncFragment extends Fragment {
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
-                StrictMode.setThreadPolicy(policy);
+               // StrictMode.setThreadPolicy(policy);
                //authenticate();
                 mProgressDialog = new ProgressDialog(getActivity());
                 mProgressDialog.setMessage("Downloading...");
@@ -214,7 +214,7 @@ public class SyncFragment extends Fragment {
                 Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
         }
     }
-
+//API not active
     private void authenticate() {
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost("http://192.168.1.70:8080/retail/public/api/authenticate");

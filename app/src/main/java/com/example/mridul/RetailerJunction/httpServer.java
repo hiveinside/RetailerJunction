@@ -1,17 +1,23 @@
 package com.example.mridul.RetailerJunction;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+
+import com.example.mridul.helloworld.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -28,8 +34,8 @@ public class httpServer extends NanoHTTPD {
 
     public httpServer(Context c) throws IOException
     {
-        super(8080, new File("."));
-        //super(8080, new File("."));
+        super(Constants.HTTP_PORT, new File("."));
+        //super(Constants.HTTP_PORT, new File("."));
         context = c;
     }
 
@@ -59,12 +65,50 @@ public class httpServer extends NanoHTTPD {
             Type type = new TypeToken<DeviceInfoObj>() {}.getType();
             devInfo = gson.fromJson(p, type);
 
+            // save to database. Later send to cloud
+            Toast.makeText(context, "CustomerData: " + p, Toast.LENGTH_SHORT).show();
+
+
             // Ack to customer
             return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "Customer Data submitted");
-        }
-        else {
+
+        } else if (parms.get("getFile") != null) {
             return super.serve(uri, method, header, parms, files);
         }
+        else {
+/*
+            String filesDir = context.getFilesDir().getAbsolutePath();
+            Log.e("httpServer", filesDir.toString());
+            Log.e("httpServer", filesDir);
+
+
+            for (String strFile : filesDir.list())
+            {
+                Log.e("httpServer", strFile);
+            }
+*/
+            //uri = "/data/data/com.example.mridul.retailerjunction/files";
+            //uri = filesDir + "/assets/" + "customerkit.apk";
+
+            AssetManager mngr = context.getAssets();
+            try {
+                InputStream is = mngr.open("customerkit.apk");
+
+                Response response = new NanoHTTPD.Response(HTTP_OK, MIME_HTML, is);
+                response = new Response( HTTP_OK, "application/octet-stream", is);
+                response.addHeader( "Content-Length", "" + is.available());
+                response.addHeader( "Content-Disposition", "attachment; filename=\"" + "customerkit.apk" + "\"");
+                //response.addHeader("ETag", etag); // TODO:
+
+                response.addHeader( "Accept-Ranges", "bytes"); // Announce that the file server accepts partial content requestes
+                return response;
+                //return super.serve(uri, method, header, parms, files);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return super.serve(uri, method, header, parms, files);
     }
 
     private String getAppsListTest() {

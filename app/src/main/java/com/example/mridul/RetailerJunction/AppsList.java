@@ -65,7 +65,7 @@ public class AppsList extends Application {
         appI.AppName = (String)pi.applicationInfo.loadLabel(pm);
         appI.packageName = (String)pi.applicationInfo.packageName;
         appI.iconUrl = storeDrawable(d, (String)pi.applicationInfo.packageName);
-        appI.apkUrl = "http://192.168.43.1:8080" + APKFilePath;
+        appI.apkUrl = "http://192.168.43.1:8080" + APKFilePath + "?getFile";
      /*  // String encodedPath = "";
         try {
             appI.apkUrl = URLEncoder.encode(appI.apkUrl, "utf-8");
@@ -105,7 +105,7 @@ public class AppsList extends Application {
             e.printStackTrace();
         }
 
-        return "http://192.168.43.1:8080" + extStorageDirectory + packageName + ".PNG";
+        return "http://192.168.43.1:8080" + extStorageDirectory + packageName + ".PNG" + "?getFile";
     }
 
 
