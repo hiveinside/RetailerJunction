@@ -1,10 +1,8 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.UTILS;
 
 import java.util.Date;
 
-/**
- * Created by satish on 4/12/16.
- */
+
 public class AppInfoObj {
     public String AppName;
 

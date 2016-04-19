@@ -1,25 +1,19 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.UI;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.mridul.RetailerJunction.HTTP.httpServer;
 import com.example.mridul.helloworld.R;
-
-import java.io.IOException;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -56,6 +50,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         viewPager.setAdapter(mAdapter);
         actionBar.setHomeButtonEnabled(false);
+        getActionBar().setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Adding Tabs

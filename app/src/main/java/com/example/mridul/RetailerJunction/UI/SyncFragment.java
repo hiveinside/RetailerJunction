@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.UI;
 
 import android.app.ProgressDialog;
 import android.content.Context;

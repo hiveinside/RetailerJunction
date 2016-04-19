@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.UTILS;
 
 import android.app.Application;
 import android.content.Context;
@@ -16,17 +16,16 @@ import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AppsList extends Application {
 
     private static List<AppInfoObj> appsList = new ArrayList<AppInfoObj>();
+    private final Context context;
 
-    AppsList(Context context) {
+    public AppsList(Context context) {
+        this.context = context;
 
         if( appsList.size() == 0 ) {
             // load list

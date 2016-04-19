@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.UI;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

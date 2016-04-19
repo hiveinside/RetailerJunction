@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.UI;
 
 /**
  * Created by satish on 4/12/16.

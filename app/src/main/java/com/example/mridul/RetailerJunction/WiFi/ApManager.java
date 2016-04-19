@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.WiFi;
 
 /**
  * Created by Mridul on 3/29/2016.

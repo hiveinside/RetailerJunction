@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.HTTP;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -28,7 +28,7 @@ import java.io.FileOutputStream;
 /**
  * A simple, tiny, nicely embeddable HTTP 1.0 (partially 1.1) server in Java
  *
- * <p> NanoHTTPD version 1.27,
+ * <p> NanoHTTPD_old version 1.27,
  * Copyright &copy; 2001,2005-2013 Jarno Elonen (elonen@iki.fi, http://iki.fi/elonen/)
  * and Copyright &copy; 2010 Konstantinos Togias (info@ktogias.gr, http://ktogias.gr)
  *
@@ -68,7 +68,7 @@ import java.io.FileOutputStream;
  * See the end of the source file for distribution license
  * (Modified BSD licence)
  */
-public class NanoHTTPD
+public class NanoHTTPD_old
 {
 	// ==================================================
 	// API parts
@@ -218,7 +218,7 @@ public class NanoHTTPD
 	 * Starts a HTTP server to given port.<p>
 	 * Throws an IOException if the socket is already in use
 	 */
-	public NanoHTTPD( int port, File wwwroot ) throws IOException
+	public NanoHTTPD_old(int port, File wwwroot ) throws IOException
 	{
 		myTcpPort = port;
 		this.myRootDir = wwwroot;
@@ -260,7 +260,7 @@ public class NanoHTTPD
 	 */
 	public static void main( String[] args )
 	{
-		myOut.println( "NanoHTTPD 1.27 (C) 2001,2005-2013 Jarno Elonen and (C) 2010 Konstantinos Togias\n" +
+		myOut.println( "NanoHTTPD_old 1.27 (C) 2001,2005-2013 Jarno Elonen and (C) 2010 Konstantinos Togias\n" +
 				"(Command line options: [-p port] [-d root-dir] [--licence])\n" );
 
 		// Defaults
@@ -281,7 +281,7 @@ public class NanoHTTPD
 
 		try
 		{
-			new NanoHTTPD( port, wwwroot );
+			new NanoHTTPD_old( port, wwwroot );
 		}
 		catch( IOException ioe )
 		{
@@ -665,7 +665,7 @@ public class NanoHTTPD
 			{
 				String tmpdir = System.getProperty("java.io.tmpdir");
 				try {
-					File temp = File.createTempFile("NanoHTTPD", "", new File(tmpdir));
+					File temp = File.createTempFile("NanoHTTPD_old", "", new File(tmpdir));
 					OutputStream fstream = new FileOutputStream(temp);
 					fstream.write(b, offset, len);
 					fstream.close();

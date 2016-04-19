@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.WiFi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

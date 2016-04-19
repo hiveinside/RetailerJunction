@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.UTILS;
 
 /**
  * Created by Mridul on 4/14/2016.

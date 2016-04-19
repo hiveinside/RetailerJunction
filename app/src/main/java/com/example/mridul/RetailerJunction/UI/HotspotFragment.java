@@ -1,20 +1,24 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.UI;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.mridul.RetailerJunction.UTILS.AppsList;
+import com.example.mridul.RetailerJunction.UTILS.Constants;
+import com.example.mridul.RetailerJunction.HTTP.httpServer;
+import com.example.mridul.RetailerJunction.WiFi.WifiApControl;
 import com.example.mridul.helloworld.R;
 
 import java.io.IOException;
@@ -22,6 +26,7 @@ import java.io.IOException;
 /**
  * Created by satish on 4/12/16.
  */
+
 public class HotspotFragment extends Fragment {
     private static final int TURN_ON_HOTSPOT = 0;
     private static final int TURNING_ON_HOTSPOT = 1;
@@ -37,7 +42,57 @@ public class HotspotFragment extends Fragment {
     static Button button;
     static TextView ssidText;
     static TextView ipText;
-    Context context;
+    static Context context;
+
+
+    void ShowToast(String text) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void updateUI() {
+        //Button button = (Button)findViewById(R.id.HotSpot);
+        if (button != null) {
+            int state = (int) button.getTag();
+            switch (state) {
+                case TURNING_OFF_HOTSPOT: //WifiManager.WIFI_STATE_DISABLING:
+                    button.setText("Turning OFF...");
+                    break;
+                case TURN_OFF_HOTSPOT: //WifiManager.WIFI_STATE_DISABLED:
+                    button.setText("Turn ON HotSpot");
+                    button.setBackgroundColor(context.getResources().getColor(R.color.darkgreen));
+                    break;
+                case TURNING_ON_HOTSPOT: //WifiManager.WIFI_STATE_ENABLING:
+                    button.setText("Turning ON...");
+                    break;
+                case TURN_ON_HOTSPOT: //WifiManager.WIFI_STATE_ENABLED:
+                    button.setText("Turn OFF HotSpot");
+                    button.setBackgroundColor(context.getResources().getColor(R.color.darkred));
+                    break;
+                case HOTSPOT_ERROR: //WifiManager.WIFI_STATE_ENABLED:
+                    button.setText("HotSpot Error. Retry.");
+                    break;
+                default:
+                    button.setText("HotSpot in Unknown State. Retry.");
+                    break;
+            }
+
+            // hotspot text
+
+            if (state == TURN_ON_HOTSPOT && wifiConfiguration != null) {
+                ssidText.setText("1) Connect to my HotSpot: " + wifiConfiguration.SSID);
+            } else {
+                ssidText.setText("");
+            }
+
+            if (state == TURN_ON_HOTSPOT) {
+                //ipText.setText(Formatter.formatIpAddress(mWifiManager.getConnectionInfo().getIpAddress()));
+                ipText.setText("2) Enter this URL in Browser: " + "192.168.43.1" + ":" + Constants.HTTP_PORT);
+            } else {
+                ipText.setText("");
+            }
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,8 +118,9 @@ public class HotspotFragment extends Fragment {
         //button.setOnClickListener(this);
 
 
-        IntentFilter mIntentFilter=new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED");
-        getActivity().registerReceiver(new WifiReceiver(), mIntentFilter);
+        //IntentFilter mIntentFilter=new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED");
+        //getActivity().registerReceiver(new WifiReceiver(), mIntentFilter);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +130,7 @@ public class HotspotFragment extends Fragment {
                 if (button.getTag() == TURN_OFF_HOTSPOT) {
 
                     // Parse APKs. Store data.
+                    // TODO:
                     AppsList localappsList = new AppsList(context);
 
                     //Start hotspot - without user config.
@@ -84,15 +141,16 @@ public class HotspotFragment extends Fragment {
                         // Start webserver
                         try {
                             h = new httpServer(context);
+                            h.start();
                         } catch (IOException ioe) {
                             button.setTag(TURN_OFF_HOTSPOT);
-                            updateButtonText("HTTP server failed. Retry");
+                            ShowToast("HTTP server failed. Retry");
                             h.stop();
                         }
                     } else {
                         button.setTag(TURN_OFF_HOTSPOT);
                         wifiConfiguration = null;
-                        updateButtonText("HotSpot failed. Retry");
+                        ShowToast("HotSpot failed. Retry");
                     }
 
                 } else if (button.getTag() == TURN_ON_HOTSPOT) {
@@ -100,6 +158,8 @@ public class HotspotFragment extends Fragment {
                     apMgr.disable(); // Stop webserver
                     wifiConfiguration = null;
                 }
+
+                updateUI();
             }
         });
     }
@@ -109,31 +169,25 @@ public class HotspotFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
-            String msg = null;
 
             switch (state) {
                 case 10: //WifiManager.WIFI_STATE_DISABLING:
                     button.setTag(TURNING_OFF_HOTSPOT);
-                    msg = "Turning OFF...";
                     break;
                 case 11: //WifiManager.WIFI_STATE_DISABLED:
                     button.setTag(TURN_OFF_HOTSPOT);
-                    msg = "Turn ON HotSpot";
                     break;
                 case 12: //WifiManager.WIFI_STATE_ENABLING:
                     button.setTag(TURNING_ON_HOTSPOT);
-                    msg = "Turning ON...";
                     break;
                 case 13: //WifiManager.WIFI_STATE_ENABLED:
                     button.setTag(TURN_ON_HOTSPOT);
-                    msg = "Turn OFF HotSpot";
                     break;
                 default:
                     button.setTag(HOTSPOT_ERROR);
-                    msg = "HOTSPOT_ERROR";
                     break;
             }
-            updateButtonText(msg);
+            updateUI();
         }
     }
 
@@ -147,23 +201,6 @@ public class HotspotFragment extends Fragment {
 
         if (apMgr!= null)
             apMgr.disable(); // Stop webserver
-    }
-
-    public static void updateButtonText(String msg) {
-        //Button button = (Button)findViewById(R.id.HotSpot);
-        if (button != null)
-            button.setText(msg);
-
-        // hotspot text
-
-        if (wifiConfiguration != null) {
-            ssidText.setText("HotSpot: " + wifiConfiguration.SSID);
-        } else {
-            ssidText.setText("HotSpot: " + "");
-        }
-
-        //ipText.setText(Formatter.formatIpAddress(mWifiManager.getConnectionInfo().getIpAddress()));
-        ipText.setText("IP Address: " + "192.168.43.1" + ":" + Constants.HTTP_PORT);
     }
 }
 
