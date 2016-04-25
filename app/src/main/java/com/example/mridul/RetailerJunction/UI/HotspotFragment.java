@@ -1,9 +1,8 @@
-package com.example.mridul.RetailerJunction.UI;
+package com.example.mridul.RetailerJunction.ui;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -15,10 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mridul.RetailerJunction.UTILS.AppsList;
-import com.example.mridul.RetailerJunction.UTILS.Constants;
-import com.example.mridul.RetailerJunction.HTTP.httpServer;
-import com.example.mridul.RetailerJunction.WiFi.WifiApControl;
+import com.example.mridul.RetailerJunction.utils.AppsList;
+import com.example.mridul.RetailerJunction.utils.Constants;
+import com.example.mridul.RetailerJunction.http.httpServer;
+import com.example.mridul.RetailerJunction.wifi.WifiApControl;
 import com.example.mridul.helloworld.R;
 
 import java.io.IOException;

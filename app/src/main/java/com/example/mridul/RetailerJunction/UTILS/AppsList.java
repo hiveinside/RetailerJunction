@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction.UTILS;
+package com.example.mridul.RetailerJunction.utils;
 
 import android.app.Application;
 import android.content.Context;
@@ -64,14 +64,14 @@ public class AppsList extends Application {
         appI.AppName = (String)pi.applicationInfo.loadLabel(pm);
         appI.packageName = (String)pi.applicationInfo.packageName;
         appI.iconUrl = storeDrawable(d, (String)pi.applicationInfo.packageName);
-        appI.apkUrl = "http://192.168.43.1:8080" + APKFilePath + "?getFile";
+        appI.apkUrl = "http://192.168.43.1:8888" + APKFilePath + "?getFile";
      /*  // String encodedPath = "";
         try {
             appI.apkUrl = URLEncoder.encode(appI.apkUrl, "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        //appI.apkUrl = "http://192.168.43.1:8080" + encodedPath;*/
+        //appI.apkUrl = "http://192.168.43.1:8888" + encodedPath;*/
 
 
         return appI;
@@ -104,7 +104,7 @@ public class AppsList extends Application {
             e.printStackTrace();
         }
 
-        return "http://192.168.43.1:8080" + extStorageDirectory + packageName + ".PNG" + "?getFile";
+        return "http://192.168.43.1:8888" + extStorageDirectory + packageName + ".PNG" + "?getFile";
     }
 
 

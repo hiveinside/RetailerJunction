@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction.HTTP;
+package com.example.mridul.RetailerJunction.http;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

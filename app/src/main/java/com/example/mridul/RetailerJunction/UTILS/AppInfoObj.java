@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction.UTILS;
+package com.example.mridul.RetailerJunction.utils;
 
 import java.util.Date;
 

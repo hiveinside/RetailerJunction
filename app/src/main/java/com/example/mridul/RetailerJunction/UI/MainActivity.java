@@ -1,4 +1,4 @@
-package com.example.mridul.RetailerJunction.UI;
+package com.example.mridul.RetailerJunction.ui;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.mridul.RetailerJunction.HTTP.httpServer;
+import com.example.mridul.RetailerJunction.http.httpServer;
 import com.example.mridul.helloworld.R;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {

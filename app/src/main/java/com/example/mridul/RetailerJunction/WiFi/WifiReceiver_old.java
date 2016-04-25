@@ -1,11 +1,10 @@
-package com.example.mridul.RetailerJunction.WiFi;
+package com.example.mridul.RetailerJunction.wifi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class WifiReceiver_old extends BroadcastReceiver {
 

@@ -1,4 +1,18 @@
-package com.example.mridul.RetailerJunction.HTTP;
+package com.example.mridul.RetailerJunction.http;
+
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
+
+import com.example.mridul.RetailerJunction.db.DatabaseHelper;
+import com.example.mridul.RetailerJunction.db.PromoterInfoObject;
+import com.example.mridul.RetailerJunction.db.dbDataObject;
+import com.example.mridul.RetailerJunction.db.installRecordObject;
+import com.example.mridul.RetailerJunction.utils.AppsList;
+import com.example.mridul.RetailerJunction.utils.Constants;
+import com.example.mridul.RetailerJunction.utils.DeviceInfoObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,24 +20,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
-import com.example.mridul.RetailerJunction.UTILS.AppInfoObj;
-import com.example.mridul.RetailerJunction.UTILS.AppsList;
-import com.example.mridul.RetailerJunction.UTILS.Constants;
-import com.example.mridul.RetailerJunction.UTILS.DeviceInfoObj;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.widget.Toast;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -34,9 +34,6 @@ public class httpServer extends NanoHTTPD {
 
     Context context;
     public AppsList appsList;
-
-    public DeviceInfoObj devInfo;
-
 
     public httpServer(Context c) throws IOException
     {
@@ -56,54 +53,80 @@ public class httpServer extends NanoHTTPD {
 
         Map<String, String> parms = session.getParms();
 
-        if (parms.get("getAppsList") != null) {
+        Map<String, String> map = new HashMap<String, String>();
+        Method method = session.getMethod();
+
+        if ( Method.GET.equals(method) && parms.get("getAppsList") != null) {
 
             appsList = new AppsList(context);
 
             return newFixedLengthResponse(appsList.getAppsListJson());
             //return new Response(Response.Status.OK, MIME_HTML, appsList.getAppsListJson());
 
-        } else if (parms.get("submitCustData") != null) {
-            // Save customer info for now. Ack to customer
-
-            Gson gson = new Gson();
-            String p = parms.get("data").toString();
-
-            Type type = new TypeToken<DeviceInfoObj>() {}.getType();
-            devInfo = gson.fromJson(p, type);
-
-            // save to database. Later send to cloud
-            Toast.makeText(context, "CustomerData: " + p, Toast.LENGTH_SHORT).show();
-
-
-            // Ack to customer
-            return newFixedLengthResponse("Customer Data submitted");
-            //return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "Customer Data submitted");
-
-        } else if (parms.get("getFile") != null) {
+        } else if (Method.GET.equals(method) && parms.get("getFile") != null) {
             String uri = session.getUri();
             File f = new File(".", uri);
 
             return serveFile(uri, session.getHeaders(), f, getMimeTypeForFile(uri));
 
-        } else {
-            String uri = session.getUri();
-            File f = new File(".", uri);
-            AssetManager mngr = context.getAssets();
-            Response res = null;
+        } else if (Method.POST.equals(method)) {
+            // Save customer info for now. Ack to customer
+            DeviceInfoObject deviceInfo;
+            String deviceInfoJson;
+
             try {
-                InputStream inputStream = mngr.open("customerkit.apk");
-                res = newFixedLengthResponse(Response.Status.OK, "application/octet-stream", inputStream, (int) inputStream.available());
-                res.addHeader("Accept-Ranges", "bytes");
-                res.addHeader("Content-Length", "" + inputStream.available());
-                res.addHeader( "Content-Disposition", "attachment; filename=\"" + "customerkit.apk" + "\"");
-                // res.addHeader("ETag", etag); //// TODO: 4/19/2016  
-                
-            } catch (IOException e) {
-                e.printStackTrace();
+                session.parseBody(map);
+            } catch (IOException ioe) {
+                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
+            } catch (ResponseException re) {
+                return newFixedLengthResponse(re.getStatus(), MIME_PLAINTEXT, re.getMessage());
             }
-            return res;
+
+            Type type = new TypeToken<DeviceInfoObject>() {}.getType();
+            Gson gson = new Gson();
+            deviceInfoJson = map.get("postData");
+            deviceInfo = gson.fromJson(deviceInfoJson, type);
+
+            // save to database. Later send to cloud
+            Log.e("CustomerData: ", deviceInfoJson);
+            {
+                dbDataObject data = new dbDataObject();
+                data.promoterInfo = new PromoterInfoObject();
+
+                data.promoterInfo.promoterId = "9243090116";
+                data.promoterInfo.shareAppVersion = "1.0.0";
+
+                data.installRecords = getTestRecords();
+                data.deviceDetails = deviceInfo;
+
+                DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context.getApplicationContext());
+                Log.e("dbObj: ", gson.toJson(data));
+                databaseHelper.add(gson.toJson(data));
+            }
+
+            // Ack to customer
+            return newFixedLengthResponse("Customer Data submitted");
+            //return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "Customer Data submitted");
+
         }
+
+        // any other request
+        String uri = session.getUri();
+        File f = new File(".", uri);
+        AssetManager mngr = context.getAssets();
+        Response res = null;
+        try {
+            InputStream inputStream = mngr.open("customerkit.apk");
+            res = newFixedLengthResponse(Response.Status.OK, "application/octet-stream", inputStream, (int) inputStream.available());
+            res.addHeader("Accept-Ranges", "bytes");
+            res.addHeader("Content-Length", "" + inputStream.available());
+            res.addHeader( "Content-Disposition", "attachment; filename=\"" + "customerkit.apk" + "\"");
+            // res.addHeader("ETag", etag); //// TODO: 4/19/2016
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
 
 /*
         else {
@@ -128,6 +151,32 @@ public class httpServer extends NanoHTTPD {
 */
         //// TODO: 4/19/2016 do we need this?
         //return super.serve(session);
+    }
+
+    private List<installRecordObject> getTestRecords() {
+        List<installRecordObject> records = new ArrayList<>();
+
+        installRecordObject tmp = new installRecordObject();
+
+        tmp.packageName = "test1";
+        tmp.md5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        tmp.size = 11111111;
+        tmp.timestamp = System.currentTimeMillis();
+        records.add(0, tmp);
+
+        tmp.packageName = "test2";
+        tmp.md5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        tmp.size = 22222222;
+        tmp.timestamp = System.currentTimeMillis();
+        records.add(1, tmp);
+
+        tmp.packageName = "test3";
+        tmp.md5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        tmp.size = 33333333;
+        tmp.timestamp = System.currentTimeMillis();
+        records.add(2, tmp);
+
+        return records;
     }
 
     Response serveFile(String uri, Map<String, String> header, File file, String mime) {
