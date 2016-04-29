@@ -24,6 +24,10 @@ public class AppsList extends Application {
     private static List<AppInfoObj> appsList = new ArrayList<AppInfoObj>();
     private final Context context;
 
+    public static List<AppInfoObj> getAppsList() {
+        return appsList;
+    }
+
     public AppsList(Context context) {
         this.context = context;
 
@@ -78,7 +82,7 @@ public class AppsList extends Application {
     }
 
 
-    public String storeDrawable (Drawable drawable, String packageName) {
+    private String storeDrawable (Drawable drawable, String packageName) {
         Bitmap bm = drawableToBitmap(drawable);
 
         String extStorageDirectory = "/sdcard/AppsShare/icons/"; //dont add extra slash
@@ -109,7 +113,7 @@ public class AppsList extends Application {
 
 
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    private static Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap = null;
 
         if (drawable instanceof BitmapDrawable) {
