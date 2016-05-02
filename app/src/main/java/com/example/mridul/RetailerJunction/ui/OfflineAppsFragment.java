@@ -8,23 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.example.mridul.RetailerJunction.utils.AppInfoObj;
+import com.example.mridul.RetailerJunction.utils.AppDownloader;
+import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.helloworld.R;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by satish on 4/12/16.
  */
-public class SyncFragment extends Fragment {
+public class OfflineAppsFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private Handler handler = new Handler();
@@ -61,9 +59,14 @@ public class SyncFragment extends Fragment {
         }
     };
 
-    private List<AppInfoObj> getNewApps() {
+    private List<AppInfoObject> getNewApps() {
         AppsList a = new AppsList(getActivity());
-        List<AppInfoObj> newAppsList = a.getAppsList();
+        List<AppInfoObject> newAppsList = a.getAppsList();
+
+
+
+        AppDownloader ad = new AppDownloader();
+        ad.download(getActivity().getApplicationContext().getFilesDir().getAbsolutePath());
 
         swipeRefreshLayout.setRefreshing(false);
 
@@ -77,12 +80,21 @@ public class SyncFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // test.. do in oncreate
+
+        //Application a = getActivity().getApplication();
+        //FileDownloader.init(getActivity().getApplicationContext());
+
+        //FileDownloadUtils.
+
         {
             // find the layout
             swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
 
             ListView listView = (ListView) getActivity().findViewById(R.id.offlinelist);
-            listView.setAdapter(new OfflineListAdapter(getActivity().getApplicationContext(), R.layout.list_item, getNewApps()));
+
+            // remove this for time being.
+            //listView.setAdapter(new OfflineListAdapter(getActivity().getApplicationContext(), R.layout.list_item, getNewApps()));
 
             // the refresh listner. this would be called when the layout is pulled down
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

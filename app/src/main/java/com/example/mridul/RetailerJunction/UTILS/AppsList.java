@@ -21,19 +21,24 @@ import java.util.List;
 
 public class AppsList extends Application {
 
-    private static List<AppInfoObj> appsList = new ArrayList<AppInfoObj>();
+    private static List<AppInfoObject> appsList = new ArrayList<AppInfoObject>();
     private final Context context;
 
-    public static List<AppInfoObj> getAppsList() {
+    public static List<AppInfoObject> getAppsList() {
         return appsList;
     }
 
     public AppsList(Context context) {
         this.context = context;
 
-        if( appsList.size() == 0 ) {
+        if( appsList.size() > 0 ) {
+            appsList.clear();
+        }
+
+        {
             // load list
-            String path = "/sdcard/AppsShare/apks/";
+            String STORAGE_DIRECTORY = context.getApplicationContext().getFilesDir().getAbsolutePath();
+            String path = STORAGE_DIRECTORY + "/apks/";
 
             //AssetManager assetManager = getAssets();
             File f = new File(path);
@@ -51,10 +56,10 @@ public class AppsList extends Application {
     }
 
 
-    private AppInfoObj getAppDetail(Context context, String APKFilePath) {
+    private AppInfoObject getAppDetail(Context context, String APKFilePath) {
 
 
-        AppInfoObj appI = new AppInfoObj();
+        AppInfoObject appI = new AppInfoObject();
 
         PackageManager pm = context.getPackageManager();
         PackageInfo pi = pm.getPackageArchiveInfo(APKFilePath, 0);
@@ -85,9 +90,10 @@ public class AppsList extends Application {
     private String storeDrawable (Drawable drawable, String packageName) {
         Bitmap bm = drawableToBitmap(drawable);
 
-        String extStorageDirectory = "/sdcard/AppsShare/icons/"; //dont add extra slash
+        String STORAGE_DIRECTORY = context.getApplicationContext().getFilesDir().getAbsolutePath();
+        String iconStorageDirectory = STORAGE_DIRECTORY + "/icons/"; //dont add extra slash
 
-        File myFile = new File(extStorageDirectory, packageName + ".PNG");
+        File myFile = new File(iconStorageDirectory, packageName + ".PNG");
 
         if (!myFile.exists()) {
             myFile.getParentFile().mkdirs();
@@ -108,7 +114,7 @@ public class AppsList extends Application {
             e.printStackTrace();
         }
 
-        return "http://192.168.43.1:8888" + extStorageDirectory + packageName + ".PNG" + "?getFile";
+        return "http://192.168.43.1:8888" + iconStorageDirectory + packageName + ".PNG" + "?getFile";
     }
 
 

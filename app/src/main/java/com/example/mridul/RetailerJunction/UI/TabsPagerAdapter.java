@@ -22,7 +22,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
                 return new HotspotFragment();
             case 1:
                 // Games fragment activity
-                return new SyncFragment();
+                return new OfflineAppsFragment();
             case 2:
                 // Movies fragment activity
                 return new ConsoleFragment();

@@ -1,7 +1,6 @@
 package com.example.mridul.RetailerJunction.ui;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.mridul.RetailerJunction.utils.AppInfoObj;
+import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.helloworld.R;
 
 import java.io.File;
@@ -22,12 +20,15 @@ import java.util.List;
  * Created by Mridul on 4/29/2016.
  */
 
-public class OfflineListAdapter extends ArrayAdapter<AppInfoObj> {
+public class OfflineListAdapter extends ArrayAdapter<AppInfoObject> {
     private int list_item;
     private LayoutInflater inflater;
+    private Context context;
 
-    public OfflineListAdapter ( Context c, int resourceId, List<AppInfoObj> objects) {
+
+    public OfflineListAdapter ( Context c, int resourceId, List<AppInfoObject> objects) {
         super( c, resourceId, objects );
+        context = c;
         list_item = resourceId;
         inflater = LayoutInflater.from(c);
     }
@@ -36,12 +37,12 @@ public class OfflineListAdapter extends ArrayAdapter<AppInfoObj> {
     @Override
     public View getView (int position, View one_row, ViewGroup parent ) {
         one_row = (LinearLayout) inflater.inflate( list_item, null );
-        AppInfoObj appInfo = getItem( position );
+        AppInfoObject appInfo = getItem( position );
 
         ImageView icon = (ImageView) one_row.findViewById(R.id.appIcon);
 
 
-        File imgFile = new File("/sdcard/AppsShare/icons/" + appInfo.packageName + ".PNG");
+        File imgFile = new File(context.getApplicationContext().getFilesDir().getAbsolutePath() + "/icons/" + appInfo.packageName + ".PNG");
         if(imgFile.exists()) {
             icon.setImageURI(Uri.fromFile(imgFile));
         }

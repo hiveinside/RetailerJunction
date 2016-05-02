@@ -3,7 +3,7 @@ package com.example.mridul.RetailerJunction.utils;
 import java.util.Date;
 
 
-public class AppInfoObj {
+public class AppInfoObject {
     public String AppName;
 
     public String packageName;
