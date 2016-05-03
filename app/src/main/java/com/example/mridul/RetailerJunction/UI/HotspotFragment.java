@@ -85,7 +85,7 @@ public class HotspotFragment extends Fragment {
 
             if (state == TURN_ON_HOTSPOT) {
                 //ipText.setText(Formatter.formatIpAddress(mWifiManager.getConnectionInfo().getIpAddress()));
-                ipText.setText("2) Enter this URL in Browser: " + "192.168.43.1" + ":" + Constants.HTTP_PORT);
+                ipText.setText("2) Enter this URL in Browser: " + Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT);
             } else {
                 ipText.setText("");
             }

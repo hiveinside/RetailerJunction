@@ -73,14 +73,14 @@ public class AppsList extends Application {
         appI.AppName = (String)pi.applicationInfo.loadLabel(pm);
         appI.packageName = (String)pi.applicationInfo.packageName;
         appI.iconUrl = storeDrawable(d, (String)pi.applicationInfo.packageName);
-        appI.apkUrl = "http://192.168.43.1:8888" + APKFilePath + "?getFile";
+        appI.apkUrl = Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + APKFilePath + "?getFile";
      /*  // String encodedPath = "";
         try {
             appI.apkUrl = URLEncoder.encode(appI.apkUrl, "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        //appI.apkUrl = "http://192.168.43.1:8888" + encodedPath;*/
+        //appI.apkUrl = Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + encodedPath;*/
 
 
         return appI;
@@ -114,7 +114,7 @@ public class AppsList extends Application {
             e.printStackTrace();
         }
 
-        return "http://192.168.43.1:8888" + iconStorageDirectory + packageName + ".PNG" + "?getFile";
+        return Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + iconStorageDirectory + packageName + ".PNG" + "?getFile";
     }
 
 
