@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.mridul.RetailerJunction.utils.AppDownloader;
 import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
+import com.example.mridul.RetailerJunction.utils.CloudAppsList;
 import com.example.mridul.helloworld.R;
 
 import java.text.DateFormat;
@@ -63,6 +64,9 @@ public class OfflineAppsFragment extends Fragment {
         AppsList a = new AppsList(getActivity());
         List<AppInfoObject> newAppsList = a.getAppsList();
 
+
+        CloudAppsList cloudAppsList = new CloudAppsList();
+        cloudAppsList.FetchCloudAppsList(this.getActivity());
 
 
         AppDownloader ad = new AppDownloader();

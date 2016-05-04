@@ -10,25 +10,29 @@ public class DAOGenerator {
     public static void main(String args[]) throws Exception {
         Schema schema = new Schema(10, "com.example.mridul.RetailerJunction.daogenerator.model");
 
-        Entity event = schema.addEntity("Event");
-        event.addIdProperty().autoincrement();
-        event.addStringProperty("name");
-        event.addStringProperty("value");
-        event.addStringProperty("extraname");
-        event.addBooleanProperty("issent");
-        event.addDateProperty("date");
-        event.addIntProperty("count");
+        /*
+         * Table to store current available list from cloud
+         */
+        Entity appDetails = schema.addEntity("CloudAppDetails");
+        appDetails.addIdProperty().autoincrement();
+        appDetails.addIntProperty("campaign_id");
+        appDetails.addStringProperty("name");
+        appDetails.addStringProperty("version");
+        appDetails.addIntProperty("size");
+        appDetails.addStringProperty("downloadurl");
+        appDetails.addStringProperty("packagename");
+        appDetails.addStringProperty("md5");
+        appDetails.addIntProperty("state");
+        appDetails.addLongProperty("ts"); // ts of entry/update into DB
 
-        //Location entity
-        Entity locationEvent = schema.addEntity("AnalyticsLocation");
-        locationEvent.addIdProperty().autoincrement();
-        locationEvent.addStringProperty("locationidentifier");
-        locationEvent.addDoubleProperty("latitude");
-        locationEvent.addDoubleProperty("longitude");
-        locationEvent.addIntProperty("locationkey");
-        locationEvent.addLongProperty("locationdate");
-        locationEvent.addStringProperty("locationname");
-        locationEvent.addStringProperty("locationextraidentifier");
+        /*
+         * Table to store current download status
+         */
+
+        /*
+         * Table to store install records - to be sent to cloud
+         */
+
 
         new DaoGenerator().generateAll(schema, "app/src/main/java");
     }

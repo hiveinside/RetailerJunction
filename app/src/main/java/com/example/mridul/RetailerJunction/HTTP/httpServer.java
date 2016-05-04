@@ -8,6 +8,7 @@ import com.example.mridul.RetailerJunction.db.DatabaseHelper;
 import com.example.mridul.RetailerJunction.db.PromoterInfoObject;
 import com.example.mridul.RetailerJunction.db.dbDataObject;
 import com.example.mridul.RetailerJunction.db.installRecordObject;
+import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.RetailerJunction.utils.Constants;
 import com.example.mridul.RetailerJunction.utils.DeviceInfoObject;
@@ -63,11 +64,35 @@ public class httpServer extends NanoHTTPD {
             return newFixedLengthResponse(appsList.getAppsListJson());
             //return new Response(Response.Status.OK, MIME_HTML, appsList.getAppsListJson());
 
-        } else if (Method.GET.equals(method) && parms.get("getFile") != null) {
+        } else if (Method.GET.equals(method) && parms.get("getIcon") != null) {
             String uri = session.getUri();
-            File f = new File(".", uri);
+            File file = new File(RetailerApplication.getIconDir(), uri);
 
-            return serveFile(uri, session.getHeaders(), f, getMimeTypeForFile(uri));
+            Response res;
+            try {
+                res = newFixedFileResponse(file, getMimeTypeForFile(uri));
+                res.addHeader("Content-Length", "" + file.length());
+                // res.addHeader("ETag", etag); //// TODO: 5/5/2016  
+            } catch (FileNotFoundException e) {
+                res = newFixedLengthResponse(Response.Status.FORBIDDEN, NanoHTTPD.MIME_PLAINTEXT, "FORBIDDEN: Reading file failed.");
+            }
+
+            return res;
+
+        } else if (Method.GET.equals(method) && parms.get("getApk") != null) {
+            String uri = session.getUri();
+            File file = new File(RetailerApplication.getApkDir(), uri);
+
+            Response res;
+            try {
+                res = newFixedFileResponse(file, getMimeTypeForFile(uri));
+                res.addHeader("Content-Length", "" + file.length());
+                // res.addHeader("ETag", etag); //// TODO: 5/5/2016
+            } catch (FileNotFoundException e) {
+                res = newFixedLengthResponse(Response.Status.FORBIDDEN, NanoHTTPD.MIME_PLAINTEXT, "FORBIDDEN: Reading file failed.");
+            }
+
+            return res;
 
         } else if (Method.POST.equals(method)) {
             // Save customer info for now. Ack to customer
@@ -111,8 +136,6 @@ public class httpServer extends NanoHTTPD {
         }
 
         // any other request
-        String uri = session.getUri();
-        File f = new File(".", uri);
         AssetManager mngr = context.getAssets();
         Response res = null;
         try {

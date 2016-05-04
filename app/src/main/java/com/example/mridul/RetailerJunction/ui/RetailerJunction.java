@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.example.mridul.RetailerJunction.http.httpServer;
 import com.example.mridul.helloworld.R;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+public class RetailerJunction extends FragmentActivity implements ActionBar.TabListener {
 
     private BroadcastReceiver mBroadcastReceiver;
 
@@ -28,7 +28,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     Context context;
 
     void ShowToast (String text) {
-        Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(RetailerJunction.this, text, Toast.LENGTH_SHORT).show();
     }
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
@@ -41,6 +41,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 
         super.onCreate(savedInstanceState);
+        RetailerApplication.setRJContext(this);
+        RetailerApplication.setIconDir(getApplicationContext().getFilesDir().getAbsolutePath() + "/icons/");
+        RetailerApplication.setApkDir(getApplicationContext().getFilesDir().getAbsolutePath() + "/apks/");
         setContentView(R.layout.activity_main);
 
         // Initilization

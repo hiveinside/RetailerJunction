@@ -1,13 +1,18 @@
 package com.example.mridul.RetailerJunction.utils;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.mridul.RetailerJunction.daogenerator.model.CloudAppDetails;
+import com.example.mridul.RetailerJunction.daogenerator.model.CloudAppDetailsDao;
+import com.example.mridul.RetailerJunction.daogenerator.model.DaoMaster;
+import com.example.mridul.RetailerJunction.daogenerator.model.DaoSession;
+import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,14 +41,20 @@ public class AppDownloader {
         ROOT_DIR = rootDir;
         APK_DIR = ROOT_DIR + "/apks/";
 
-        CloudAppsList cloudAppsList = new CloudAppsList();
-        List<CloudAppInfoObject> c = cloudAppsList.getList();
 
-        for( int i=0; i< c.size(); i++) {
-            Log.d(TAG, c.get(i).downloadurl);
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        DaoMaster daoMaster = new DaoMaster(db);
+        DaoSession daoSession = daoMaster.newSession();
+        CloudAppDetailsDao appEntryDao = daoSession.getCloudAppDetailsDao();
 
-            final String link = c.get(i).downloadurl;
-            final String destFile = APK_DIR + c.get(i).packagename + ".tmp"; // dont add .apk till completed + ".apk";
+        List<CloudAppDetails> cd = appEntryDao.loadAll();
+
+        for( int i=0; i< cd.size(); i++) {
+            Log.d(TAG, cd.get(i).getDownloadurl());
+
+            final String link = cd.get(i).getDownloadurl();
+            final String destFile = APK_DIR + cd.get(i).getPackagename() + ".tmp"; // dont add .apk till completed + ".apk";
             Log.d(TAG, "download link : " + link + " " + destFile);
             FileDownloader.getImpl().create(link).setPath(destFile).setListener(mFileDownloadListener).start();
         }

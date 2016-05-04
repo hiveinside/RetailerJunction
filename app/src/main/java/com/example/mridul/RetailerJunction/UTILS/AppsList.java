@@ -8,8 +8,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 
+import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -39,11 +41,7 @@ public class AppsList extends Application {
 
         {
             // load list
-            String STORAGE_DIRECTORY = context.getApplicationContext().getFilesDir().getAbsolutePath();
-            String path = STORAGE_DIRECTORY + "/apks/";
-
-            //AssetManager assetManager = getAssets();
-            File f = new File(path);
+            File f = new File(RetailerApplication.getApkDir());
             File file[] = f.listFiles();
 
             if (file == null) {
@@ -57,15 +55,16 @@ public class AppsList extends Application {
                 // check only apks
                 if( FilenameUtils.getExtension(file[i].getName()).equals("apk")) {
                     Log.e("Files", "Filename: " + file[i].getName());
-                    appsList.add(getAppDetail(context, path + file[i].getName()));
+                    appsList.add(getAppDetail(context, file[i].getName()));
                 }
             }
         }
     }
 
 
-    private AppInfoObject getAppDetail(Context context, String APKFilePath) {
+    private AppInfoObject getAppDetail(Context context, String filename) {
 
+        String APKFilePath = RetailerApplication.getApkDir() + filename;
 
         AppInfoObject appI = new AppInfoObject();
 
@@ -81,15 +80,7 @@ public class AppsList extends Application {
         appI.AppName = (String)pi.applicationInfo.loadLabel(pm);
         appI.packageName = (String)pi.applicationInfo.packageName;
         appI.iconUrl = storeDrawable(d, (String)pi.applicationInfo.packageName);
-        appI.apkUrl = Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + APKFilePath + "?getFile";
-     /*  // String encodedPath = "";
-        try {
-            appI.apkUrl = URLEncoder.encode(appI.apkUrl, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        //appI.apkUrl = Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + encodedPath;*/
-
+        appI.apkUrl = Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + "/" + filename + "?getApk";
 
         return appI;
     }
@@ -98,8 +89,7 @@ public class AppsList extends Application {
     private String storeDrawable (Drawable drawable, String packageName) {
         Bitmap bm = drawableToBitmap(drawable);
 
-        String STORAGE_DIRECTORY = context.getApplicationContext().getFilesDir().getAbsolutePath();
-        String iconStorageDirectory = STORAGE_DIRECTORY + "/icons/"; //dont add extra slash
+        String iconStorageDirectory = RetailerApplication.getIconDir(); //dont add extra slash
 
         File myFile = new File(iconStorageDirectory, packageName + ".PNG");
 
@@ -122,7 +112,7 @@ public class AppsList extends Application {
             e.printStackTrace();
         }
 
-        return Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + iconStorageDirectory + packageName + ".PNG" + "?getFile";
+        return Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + "/" + packageName + ".PNG" + "?getIcon";
     }
 
 
