@@ -1,13 +1,17 @@
 package com.example.mridul.RetailerJunction.utils;
 
-import android.os.Environment;
 import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Mridul on 4/17/2016.
@@ -23,57 +27,91 @@ public class AppDownloader {
     md5
      */
     private static final String TAG = "AppDownloader";
-    private static final String DOWNLOAD_LINK = "https://s3-ap-southeast-1.amazonaws.com/lavaretailapp/apps/redBus_3.50.01.apk";
     //private static final String DESTINATION = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/update.apk";
     private static String ROOT_DIR = "destination_dir";
-    private static final String DESTINATION = "/apks/redbus1.apk";
+    private static String APK_DIR = "final_dir";
 
-    public void download(String dest) {
-        final String link = DOWNLOAD_LINK;
-        ROOT_DIR = dest;
-        Log.d(TAG, "download link : "+link + " "+ ROOT_DIR + DESTINATION);
-        FileDownloader.getImpl().create(link).setPath(ROOT_DIR + DESTINATION).setListener(mFileDownloadListener).start();
+    public void download(String rootDir) {
+
+        ROOT_DIR = rootDir;
+        APK_DIR = ROOT_DIR + "/apks/";
+
+        CloudAppsList cloudAppsList = new CloudAppsList();
+        List<CloudAppInfoObject> c = cloudAppsList.getList();
+
+        for( int i=0; i< c.size(); i++) {
+            Log.d(TAG, c.get(i).downloadurl);
+
+            final String link = c.get(i).downloadurl;
+            final String destFile = APK_DIR + c.get(i).packagename + ".tmp"; // dont add .apk till completed + ".apk";
+            Log.d(TAG, "download link : " + link + " " + destFile);
+            FileDownloader.getImpl().create(link).setPath(destFile).setListener(mFileDownloadListener).start();
+        }
     }
 
     final FileDownloadListener mFileDownloadListener = new FileDownloadListener() {
         @Override
         protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "download pending : "+task +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
+            Log.d(TAG, "download pending : "+task.getPath() +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
         }
 
         @Override
         protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "download progress : "+task +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
+            Log.d(TAG, "download progress : "+task.getPath() +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
         }
 
         @Override
         protected void blockComplete(BaseDownloadTask task) {
-            Log.d(TAG, "download blockComplete : "+task);
+            Log.d(TAG, "download blockComplete : "+task.getPath());
         }
 
         @Override
         protected void completed(BaseDownloadTask task) {
-            Log.d(TAG, "download completed : "+task);
+            Log.d(TAG, "download completed : "+task.getPath());
 
             // match checksum, delete if doesnt match
-            // move to final directory
-            // remove from pending download list
+
+            // rename to .apk
+            String currentName = task.getPath();
+            File from = new File(currentName);
+            File to = new File(currentName + ".apk");
+
+            try {
+                FileUtils.copyFile(from, to);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // remove from database - pending download list
+            // add to database - offline apps list
+            // Update local data structures -- appsList
             // refresh UI
         }
 
         @Override
         protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "download paused : "+task +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
+            Log.d(TAG, "download paused : "+task.getPath() +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
         }
 
         @Override
         protected void error(BaseDownloadTask task, Throwable e) {
-            Log.d(TAG, "download error : " + task + " Exception " + e);
+            Log.d(TAG, "download error : " + task.getPath() + " Exception " + e);
+
+            // decide how to restart in failed cases.
+            // restart when network in available
+
+
+            // Update local data structures -- appsList
+            // update Database
+            // refresh UI
+
+
         }
 
         @Override
         protected void warn(BaseDownloadTask task) {
-            Log.d(TAG, "download warn : "+task);
+            Log.d(TAG, "download warn : "+task.getPath());
         }
     };
 }

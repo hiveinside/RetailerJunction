@@ -1,0 +1,11 @@
+apply plugin: 'application'
+
+apply plugin: 'java'
+
+mainClassName = "com.example.mridul.RetailerJunction.daogenerator.DaoGenerator"
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'de.greenrobot:greendao-generator:2.1.0'
+    compile files('libs/freemarker-2.3.22.jar')
+}

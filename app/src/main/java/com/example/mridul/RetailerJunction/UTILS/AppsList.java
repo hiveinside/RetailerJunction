@@ -13,6 +13,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,13 +46,19 @@ public class AppsList extends Application {
             File f = new File(path);
             File file[] = f.listFiles();
 
+            if (file == null) {
+                // no apks
+                return;
+            }
             //String list[] = assetManager.list(path);
-            Log.e("Files", "Size: " + file.length);
+            Log.d("Files", "Size: " + file.length);
 
             for (int i = 0; i < file.length; i++) {
-                Log.e("Files", "Filename: " + file[i].getName());
-
-                appsList.add(getAppDetail(context, path + file[i].getName()));
+                // check only apks
+                if( FilenameUtils.getExtension(file[i].getName()).equals("apk")) {
+                    Log.e("Files", "Filename: " + file[i].getName());
+                    appsList.add(getAppDetail(context, path + file[i].getName()));
+                }
             }
         }
     }

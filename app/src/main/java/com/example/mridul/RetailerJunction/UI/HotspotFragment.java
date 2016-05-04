@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.RetailerJunction.utils.Constants;
 import com.example.mridul.RetailerJunction.http.httpServer;
@@ -21,6 +22,7 @@ import com.example.mridul.RetailerJunction.wifi.WifiApControl;
 import com.example.mridul.helloworld.R;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by satish on 4/12/16.
@@ -130,7 +132,12 @@ public class HotspotFragment extends Fragment {
 
                     // Parse APKs. Store data.
                     // TODO:
-                    AppsList localappsList = new AppsList(context);
+                    AppsList a = new AppsList(context);
+
+                    if ( a.getAppsList().size() <= 0){
+                        ShowToast("0 Offline apps");
+                        return;
+                    }
 
                     //Start hotspot - without user config.
                     boolean result = apMgr.enable(false, context);

@@ -1,5 +1,6 @@
 package com.example.mridul.RetailerJunction.utils;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,26 +29,39 @@ import java.util.List;
   "message": "Apps retrieved successfully"
 }
  */
-public class GetAppsList {
+public class CloudAppsList {
 
-    List<CloudAppInfoObject> cloudAppInfoList;
+    private List<CloudAppInfoObject> list = new ArrayList<CloudAppInfoObject>();;
 
-    List <CloudAppInfoObject> fetchAppsList() {
+    void FetchCloudAppsList() {
+        // fetch latest from cloud
 
-        List<CloudAppInfoObject> c = new ArrayList<CloudAppInfoObject>();;
+        // store in DB
+/*
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.get, "-db", null);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        DaoMaster daoMaster = new DaoMaster(db);
+        DaoSession daoSession = daoMaster.newSession();
+*/
+
+        // Store current status of downloading list.
+    }
 
 
-        c.add(getTmpObj1());
-        c.add(getTmpObj2());
-        c.add(getTmpObj3());
 
-        return c;
+    List <CloudAppInfoObject> getList() {
+
+        list.add(getTmpObj1());
+        list.add(getTmpObj2());
+        list.add(getTmpObj3());
+
+        return list;
     }
 
 
     CloudAppInfoObject getTmpObj1() {
         CloudAppInfoObject tmp = new CloudAppInfoObject();
-        tmp.id = 12345;
+        tmp.id = 1;
         tmp.name = "Amazon";
         tmp.version = "2.2.9";
         tmp.size = 54676554;
@@ -63,40 +77,41 @@ public class GetAppsList {
 
         return tmp;
     }
+
     CloudAppInfoObject getTmpObj2() {
         CloudAppInfoObject tmp = new CloudAppInfoObject();
-        tmp.id = 12345;
-        tmp.name = "Flikart";
+        tmp.id = 2;
+        tmp.name = "BookMyShow";
         tmp.version = "3.3.9";
-        tmp.size = 54334532;
-        tmp.downloadurl = "https://s3-ap-southeast-1.amazonaws.com/lavaretailapp/apps/redBus_3.50.01.apk";
-        tmp.packagename = "com.flipkart";
+        tmp.size = 6756463;
+        tmp.downloadurl = "https://s3-ap-southeast-1.amazonaws.com/lavaretailapp/apps/BookMyShow.apk";
+        tmp.packagename = "com.bt.bms";
         tmp.md5 = "1234567890!@#$%^&*()";
         tmp.state = 1; // ????????????
 
 
-        tmp.created_at = 1461938114006L;
-        tmp.updated_at = 1461938114006L;
-        tmp.deleted_at = 1461938114006L;
+        tmp.created_at = 1461955114006L;
+        tmp.updated_at = 1461955114006L;
+        tmp.deleted_at = 1461955114006L;
 
         return tmp;
     }
 
     CloudAppInfoObject getTmpObj3() {
         CloudAppInfoObject tmp = new CloudAppInfoObject();
-        tmp.id = 12345;
-        tmp.name = "Redbus";
-        tmp.version = "1.1.9";
+        tmp.id = 3;
+        tmp.name = "CleanMaster";
+        tmp.version = "4.4.9";
         tmp.size = 3456554;
-        tmp.downloadurl = "https://s3-ap-southeast-1.amazonaws.com/lavaretailapp/apps/redBus_3.50.01.apk";
-        tmp.packagename = "com.redbus";
+        tmp.downloadurl = "https://s3-ap-southeast-1.amazonaws.com/lavaretailapp/apps/CleanMaster_5.11.8.apk";
+        tmp.packagename = "com.clean.master.pkg";
         tmp.md5 = "1234567890!@#$%^&*()";
         tmp.state = 1; // ????????????
 
 
-        tmp.created_at = 1461938114006L;
-        tmp.updated_at = 1461938114006L;
-        tmp.deleted_at = 1461938114006L;
+        tmp.created_at = 1461938322006L;
+        tmp.updated_at = 1461938322006L;
+        tmp.deleted_at = 1461938322006L;
 
         return tmp;
     }

@@ -1,6 +1,7 @@
-package com.example.mridul.RetailerJunction;
+package com.example.mridul.RetailerJunction.ui;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.liulishuo.filedownloader.FileDownloader;
 
