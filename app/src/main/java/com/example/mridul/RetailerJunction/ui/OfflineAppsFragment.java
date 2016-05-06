@@ -10,12 +10,18 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mridul.RetailerJunction.utils.AppDownloader;
 import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
+import com.example.mridul.RetailerJunction.utils.CloudAppInfoObject;
 import com.example.mridul.RetailerJunction.utils.CloudAppsList;
 import com.example.mridul.helloworld.R;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloader;
+
+import org.apache.commons.io.FileUtils;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -23,10 +29,18 @@ import java.util.List;
 /**
  * Created by satish on 4/12/16.
  */
-public class OfflineAppsFragment extends Fragment {
+public class OfflineAppsFragment extends Fragment implements CloudAppsList.onFetchCloudAppsListDone, AppDownloader.onAppDownloadCompleted {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private Handler handler = new Handler();
+
+    CloudAppsList.FetchAppsTask appsListTask;
+    OfflineListAdapter mListAdapter;
+
+
+    void ShowToast (String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+    }
 
 
     @Override
@@ -49,9 +63,6 @@ public class OfflineAppsFragment extends Fragment {
                     // stop the animation after the data is fully loaded
                     swipeRefreshLayout.setRefreshing(false);
                     // TODO : update your list with the new data
-
-
-
                 }
             }
             catch (Exception e) {
@@ -64,18 +75,8 @@ public class OfflineAppsFragment extends Fragment {
         AppsList a = new AppsList(getActivity());
         List<AppInfoObject> newAppsList = a.getAppsList();
 
-
-        CloudAppsList cloudAppsList = new CloudAppsList();
+        CloudAppsList cloudAppsList = new CloudAppsList(this);
         cloudAppsList.FetchCloudAppsList(this.getActivity());
-
-
-        AppDownloader ad = new AppDownloader();
-        ad.download(getActivity().getApplicationContext().getFilesDir().getAbsolutePath());
-
-        swipeRefreshLayout.setRefreshing(false);
-
-        TextView textView = (TextView) getActivity().findViewById(R.id.statusInfo);
-        textView.setText("Last updated at: " + DateFormat.getDateTimeInstance().format(System.currentTimeMillis()));
 
         return newAppsList;
     }
@@ -84,19 +85,13 @@ public class OfflineAppsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // test.. do in oncreate
-
-        //Application a = getActivity().getApplication();
-        //FileDownloader.init(getActivity().getApplicationContext());
-
-        //FileDownloadUtils.
-
         {
             // find the layout
             swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
 
             ListView listView = (ListView) getActivity().findViewById(R.id.offlinelist);
 
+            mListAdapter = new OfflineListAdapter(getActivity().getApplicationContext(), R.layout.list_item, getNewApps());
             // remove this for time being.
             //listView.setAdapter(new OfflineListAdapter(getActivity().getApplicationContext(), R.layout.list_item, getNewApps()));
 
@@ -108,10 +103,11 @@ public class OfflineAppsFragment extends Fragment {
                     // get the new data from you data source
                     // TODO : request data here
                     // our swipeRefreshLayout needs to be notified when the data is returned in order for it to stop the animation
+
                     handler.post(refreshing);
 
                     ListView listView = (ListView) getActivity().findViewById(R.id.offlinelist);
-                    listView.setAdapter(new OfflineListAdapter(getActivity().getApplicationContext(), R.layout.list_item, getNewApps()));
+                    listView.setAdapter(mListAdapter);
                 }
             });
 
@@ -141,5 +137,61 @@ public class OfflineAppsFragment extends Fragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onFetchCloudAppsListDone(List<CloudAppInfoObject> list) {
+        //swipeRefreshLayout.setRefreshing(false);
+
+        if (list == null) {
+            ShowToast("Error syncing appslist");
+            return;
+        }
+        ShowToast("" + list.size() + " apps available");
+
+        // decide if downloads are required
+        // dont download everything
+
+        /*
+         * Send request to downloader
+         */
+        AppDownloader ad = new AppDownloader(this, list);
+        ad.download(getActivity().getApplicationContext().getFilesDir().getAbsolutePath());
+    }
+
+    @Override
+    public void onAppDownloadCompleted(BaseDownloadTask task) {
+        // figure when to stop this.. after all downloads?
+        swipeRefreshLayout.setRefreshing(false);
+        long campaign_id = ((CloudAppInfoObject)task.getTag()).id;
+        ShowToast("Downloaded: " + task.getPath() + ", " + task.getTag());
+
+        // Refresh appsList datastructure
+        AppsList a = new AppsList(getActivity());
+        String filename = ((CloudAppInfoObject)task.getTag()).packagename + ".apk";
+        //a.addToList(campaign_id, filename);
+
+        // Refresh UI
+        if (mListAdapter != null) {
+            mListAdapter.notifyDataSetChanged();
+        }
+
+
+        // do this when all downloads complete successfully
+        TextView textView = (TextView) getActivity().findViewById(R.id.statusInfo);
+        textView.setText("Last updated at: " + DateFormat.getDateTimeInstance().format(System.currentTimeMillis()));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // stop threads - applistdownloader, appdownloader
+        // otherwise it will crash
+
+        if( appsListTask != null)
+            appsListTask.cancel(true);
+
+        FileDownloader.getImpl().pauseAll();
     }
 }

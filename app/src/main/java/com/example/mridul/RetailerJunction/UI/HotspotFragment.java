@@ -130,11 +130,8 @@ public class HotspotFragment extends Fragment {
                 Integer tag = (Integer)button.getTag();
                 if (button.getTag() == TURN_OFF_HOTSPOT) {
 
-                    // Parse APKs. Store data.
-                    // TODO:
-                    AppsList a = new AppsList(context);
 
-                    if ( a.getAppsList().size() <= 0){
+                    if ( AppsList.getAppsList().size() <= 0){
                         ShowToast("0 Offline apps");
                         return;
                     }

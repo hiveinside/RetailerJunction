@@ -4,6 +4,9 @@ import java.util.Date;
 
 
 public class AppInfoObject {
+
+    public long campaign_id;
+
     public String AppName;
 
     public String packageName;

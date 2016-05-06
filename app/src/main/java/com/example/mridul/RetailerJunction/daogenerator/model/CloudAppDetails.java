@@ -6,8 +6,7 @@ package com.example.mridul.RetailerJunction.daogenerator.model;
  */
 public class CloudAppDetails {
 
-    private Long id;
-    private Integer campaign_id;
+    private Long campaign_id;
     private String name;
     private String version;
     private Integer size;
@@ -15,17 +14,18 @@ public class CloudAppDetails {
     private String packagename;
     private String md5;
     private Integer state;
-    private Long ts;
+    private Long listts;
+    private Boolean downloaded;
+    private Long apkts;
 
     public CloudAppDetails() {
     }
 
-    public CloudAppDetails(Long id) {
-        this.id = id;
+    public CloudAppDetails(Long campaign_id) {
+        this.campaign_id = campaign_id;
     }
 
-    public CloudAppDetails(Long id, Integer campaign_id, String name, String version, Integer size, String downloadurl, String packagename, String md5, Integer state, Long ts) {
-        this.id = id;
+    public CloudAppDetails(Long campaign_id, String name, String version, Integer size, String downloadurl, String packagename, String md5, Integer state, Long listts, Boolean downloaded, Long apkts) {
         this.campaign_id = campaign_id;
         this.name = name;
         this.version = version;
@@ -34,22 +34,16 @@ public class CloudAppDetails {
         this.packagename = packagename;
         this.md5 = md5;
         this.state = state;
-        this.ts = ts;
+        this.listts = listts;
+        this.downloaded = downloaded;
+        this.apkts = apkts;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getCampaign_id() {
+    public Long getCampaign_id() {
         return campaign_id;
     }
 
-    public void setCampaign_id(Integer campaign_id) {
+    public void setCampaign_id(Long campaign_id) {
         this.campaign_id = campaign_id;
     }
 
@@ -109,12 +103,28 @@ public class CloudAppDetails {
         this.state = state;
     }
 
-    public Long getTs() {
-        return ts;
+    public Long getListts() {
+        return listts;
     }
 
-    public void setTs(Long ts) {
-        this.ts = ts;
+    public void setListts(Long listts) {
+        this.listts = listts;
+    }
+
+    public Boolean getDownloaded() {
+        return downloaded;
+    }
+
+    public void setDownloaded(Boolean downloaded) {
+        this.downloaded = downloaded;
+    }
+
+    public Long getApkts() {
+        return apkts;
+    }
+
+    public void setApkts(Long apkts) {
+        this.apkts = apkts;
     }
 
 }

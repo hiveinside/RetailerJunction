@@ -7,15 +7,19 @@ import com.example.mridul.RetailerJunction.daogenerator.model.CloudAppDetails;
 import com.example.mridul.RetailerJunction.daogenerator.model.CloudAppDetailsDao;
 import com.example.mridul.RetailerJunction.daogenerator.model.DaoMaster;
 import com.example.mridul.RetailerJunction.daogenerator.model.DaoSession;
+import com.example.mridul.RetailerJunction.ui.OfflineAppsFragment;
 import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloadQueueSet;
 import com.liulishuo.filedownloader.FileDownloader;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,41 +27,51 @@ import java.util.List;
  */
 public class AppDownloader {
 
-    /*
-    id,
-    appid,
-    totalbytes,
-    downloadedbytes,
-    package,
-    md5
-     */
     private static final String TAG = "AppDownloader";
     //private static final String DESTINATION = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/update.apk";
-    private static String ROOT_DIR = "destination_dir";
     private static String APK_DIR = "final_dir";
+    OfflineAppsFragment fragment;
+    List<CloudAppInfoObject> list;
 
-    public void download(String rootDir) {
+    public AppDownloader(OfflineAppsFragment offlineAppsFragment, List<CloudAppInfoObject> list) {
+        fragment = offlineAppsFragment;
+        this.list = list;
+    }
 
-        ROOT_DIR = rootDir;
+    public void download(String ROOT_DIR) {
+
         APK_DIR = ROOT_DIR + "/apks/";
 
-
+        /*
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
-        SQLiteDatabase db = helper.getWritableDatabase();
+        SQLiteDatabase db = helper.getReadableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         DaoSession daoSession = daoMaster.newSession();
         CloudAppDetailsDao appEntryDao = daoSession.getCloudAppDetailsDao();
 
         List<CloudAppDetails> cd = appEntryDao.loadAll();
+        */
 
-        for( int i=0; i< cd.size(); i++) {
-            Log.d(TAG, cd.get(i).getDownloadurl());
+        final FileDownloadQueueSet queueSet = new FileDownloadQueueSet(mFileDownloadListener);
 
-            final String link = cd.get(i).getDownloadurl();
-            final String destFile = APK_DIR + cd.get(i).getPackagename() + ".tmp"; // dont add .apk till completed + ".apk";
+        final List<BaseDownloadTask> tasks = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            final String link = list.get(i).downloadurl;
+            final String destFile = APK_DIR + list.get(i).packagename + ".tmp"; // dont add .apk till completed + ".apk";
             Log.d(TAG, "download link : " + link + " " + destFile);
-            FileDownloader.getImpl().create(link).setPath(destFile).setListener(mFileDownloadListener).start();
+
+            tasks.add(FileDownloader.getImpl().create(link).setPath(destFile).setListener(mFileDownloadListener).setTag(list.get(i)));
         }
+        queueSet.disableCallbackProgressTimes(); // do not want each task's download progress's callback,
+        // we just consider which task will completed.
+
+        // auto retry 1 time if download fail
+        queueSet.setAutoRetryTimes(1);
+
+        // start download in serial order
+        queueSet.downloadSequentially(tasks);
+
+        queueSet.start();
     }
 
     final FileDownloadListener mFileDownloadListener = new FileDownloadListener() {
@@ -81,23 +95,39 @@ public class AppDownloader {
             Log.d(TAG, "download completed : "+task.getPath());
 
             // match checksum, delete if doesnt match
+            // match with what was sent from cloud
 
             // rename to .apk
             String currentName = task.getPath();
             File from = new File(currentName);
-            File to = new File(currentName + ".apk");
+            File to = new File(FilenameUtils.removeExtension(currentName) + ".apk");
 
-            try {
-                FileUtils.copyFile(from, to);
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+            from.renameTo(to);
+            //FileUtils.copyFile(from, to);
 
-            // remove from database - pending download list
-            // add to database - offline apps list
+            // update database - mark downloaded, apkts
+            // write to database
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
+            SQLiteDatabase db = helper.getWritableDatabase();
+            DaoMaster daoMaster = new DaoMaster(db);
+            DaoSession daoSession = daoMaster.newSession();
+            CloudAppDetailsDao appEntryDao = daoSession.getCloudAppDetailsDao();
+
+            //get record
+            long campaign_id = ((CloudAppInfoObject)task.getTag()).id;
+            CloudAppDetails c = appEntryDao.queryBuilder().where(CloudAppDetailsDao.Properties.Campaign_id.eq(campaign_id)).limit(1).unique();
+
+            if (c != null) {
+                c.setDownloaded(true);
+                c.setApkts(System.currentTimeMillis());
+
+                appEntryDao.insertOrReplace(c);
+            }
+            db.close();
             // Update local data structures -- appsList
+
             // refresh UI
+            fragment.onAppDownloadCompleted(task);
         }
 
         @Override
@@ -116,8 +146,6 @@ public class AppDownloader {
             // Update local data structures -- appsList
             // update Database
             // refresh UI
-
-
         }
 
         @Override
@@ -125,4 +153,8 @@ public class AppDownloader {
             Log.d(TAG, "download warn : "+task.getPath());
         }
     };
+
+    public interface onAppDownloadCompleted {
+        public void onAppDownloadCompleted(BaseDownloadTask task);
+    }
 }

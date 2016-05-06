@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.mridul.RetailerJunction.http.httpServer;
+import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.helloworld.R;
 
 public class RetailerJunction extends FragmentActivity implements ActionBar.TabListener {
@@ -45,6 +46,11 @@ public class RetailerJunction extends FragmentActivity implements ActionBar.TabL
         RetailerApplication.setIconDir(getApplicationContext().getFilesDir().getAbsolutePath() + "/icons/");
         RetailerApplication.setApkDir(getApplicationContext().getFilesDir().getAbsolutePath() + "/apks/");
         setContentView(R.layout.activity_main);
+
+        // Parse APKs. Store data.
+        // initialize appsList
+        // // TODO: 5/7/2016
+        AppsList a = new AppsList(context);
 
         // Initilization
         viewPager = (ViewPager) findViewById(R.id.pager);

@@ -26,15 +26,15 @@ package com.example.mridul.RetailerJunction.utils;
 }
  */
 public class CloudAppInfoObject {
-    int campagin_id;
-    String name;
-    String version;
-    int size;
-    String downloadurl;
-    String packagename;
-    String md5;
-    int state;
-    String created_at;
-    String updated_at;
-    String deleted_at;
+    public long id;
+    public String name;
+    public String version;
+    public int size;
+    public String downloadurl;
+    public String packagename;
+    public String md5;
+    public int state;
+    public String created_at;
+    public String updated_at;
+    public String deleted_at;
 }

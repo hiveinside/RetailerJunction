@@ -24,7 +24,7 @@ public class OfflineListAdapter extends ArrayAdapter<AppInfoObject> {
     private int list_item;
     private LayoutInflater inflater;
     private Context context;
-
+    private List<String> mRetailerList;
 
     public OfflineListAdapter ( Context c, int resourceId, List<AppInfoObject> objects) {
         super( c, resourceId, objects );
@@ -55,4 +55,6 @@ public class OfflineListAdapter extends ArrayAdapter<AppInfoObject> {
 
         return one_row;
     }
+
+
 }
