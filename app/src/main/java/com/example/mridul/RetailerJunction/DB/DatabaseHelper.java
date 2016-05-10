@@ -17,7 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper dbInstance;
 
     private static final String DATABASE_NAME = "installRecords.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 1; // change when schema is changed;
     private static final String TABLE_INSTALL_RECORDS = "install_records_table";
     // Database creation sql statement
 

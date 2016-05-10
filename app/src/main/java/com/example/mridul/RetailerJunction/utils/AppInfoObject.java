@@ -5,13 +5,11 @@ import java.util.Date;
 
 public class AppInfoObject {
 
-    public long campaign_id;
+    public long campaignId;
 
-    public String AppName;
+    public String appName;
 
     public String packageName;
-
-    public String description;
 
     public String iconUrl;
 
@@ -19,11 +17,11 @@ public class AppInfoObject {
 
     public String version;
 
-    public String md5;
+    public String checksum;
 
     public Integer size; //bytes
 
-    public Date date;
+    public long ts;
 
     public Float installPrice;
 

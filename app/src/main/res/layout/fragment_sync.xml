@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="match_parent"
-android:layout_height="match_parent">
+android:layout_height="match_parent" android:keepScreenOn="true">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -35,13 +35,22 @@ android:layout_height="match_parent">
 
 
         <TextView
-            android:id="@+id/statusInfo"
-            android:layout_width="match_parent"
+            android:id="@+id/infoLeft"
+            android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:text="Last updated at: "
+            android:text=""
             android:textSize="11dp"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_alignParentBottom="true"/>
-
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true" />
+        <TextView
+            android:id="@+id/infoRight"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:text=""
+            android:textSize="11dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
 </RelativeLayout>

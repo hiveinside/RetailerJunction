@@ -14,13 +14,13 @@ public class DAOGenerator {
          * Table to store current available list from cloud
          */
         Entity appDetails = schema.addEntity("CloudAppDetails");
-        appDetails.addLongProperty("campaign_id").primaryKey(); // must be long.. dao limitation
+        appDetails.addLongProperty("campaignId").primaryKey(); // must be long.. dao limitation
         appDetails.addStringProperty("name");
         appDetails.addStringProperty("version");
         appDetails.addIntProperty("size");
         appDetails.addStringProperty("downloadurl");
         appDetails.addStringProperty("packagename");
-        appDetails.addStringProperty("md5");
+        appDetails.addStringProperty("checksum");
         appDetails.addIntProperty("state");
 
         appDetails.addLongProperty("listts"); // ts of entry/update into DB

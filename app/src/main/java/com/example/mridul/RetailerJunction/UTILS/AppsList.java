@@ -4,18 +4,19 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.util.Log;
 
+import com.example.mridul.RetailerJunction.daogenerator.model.CloudAppDetails;
+import com.example.mridul.RetailerJunction.daogenerator.model.CloudAppDetailsDao;
+import com.example.mridul.RetailerJunction.daogenerator.model.DaoMaster;
+import com.example.mridul.RetailerJunction.daogenerator.model.DaoSession;
 import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,34 +36,40 @@ public class AppsList extends Application {
     public AppsList(Context context) {
         this.context = context;
 
+        // incase of reinitializing
         if( appsList.size() > 0 ) {
             appsList.clear();
         }
 
         {
-            // load list
-            File f = new File(RetailerApplication.getApkDir());
-            File file[] = f.listFiles();
+            // Get appslist from DB - only completed apks
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
+            SQLiteDatabase db = helper.getReadableDatabase();
+            DaoMaster daoMaster = new DaoMaster(db);
+            DaoSession daoSession = daoMaster.newSession();
+            CloudAppDetailsDao appEntryDao = daoSession.getCloudAppDetailsDao();
 
-            if (file == null) {
-                // no apks
-                return;
-            }
-            //String list[] = assetManager.list(path);
-            Log.d("Files", "Size: " + file.length);
+            List<CloudAppDetails> cd = appEntryDao.loadAll();
 
-            for (int i = 0; i < file.length; i++) {
-                // check only apks
-                if( FilenameUtils.getExtension(file[i].getName()).equals("apk")) {
-                    Log.e("Files", "Filename: " + file[i].getName());
-                    appsList.add(getAppDetail(context, file[i].getName()));
+            for (int i=0; i<cd.size(); i++) {
+                // if downloaded already
+                if ((cd.get(i).getDownloaded() == true)) {
+                    AppInfoObject a = getAppDetail(context, cd.get(i));
+
+                    if(a != null) {
+                        appsList.add(a);
+                    }
                 }
             }
+            db.close();
         }
     }
 
 
-    private AppInfoObject getAppDetail(Context context, String filename) {
+    private AppInfoObject getAppDetail(Context context, CloudAppDetails cloudAppInfo) {
+
+        long campaign_id = cloudAppInfo.getCampaignId();
+        String filename = cloudAppInfo.getPackagename() + ".apk";
 
         String APKFilePath = RetailerApplication.getApkDir() + filename;
 
@@ -71,16 +78,37 @@ public class AppsList extends Application {
         PackageManager pm = context.getPackageManager();
         PackageInfo pi = pm.getPackageArchiveInfo(APKFilePath, 0);
 
+        if (pi == null) {
+            // Trying to parse non existent file.
+            // update database
+            // // TODO: 5/10/2016 fix database that file was not downloaded
+            // for now it will still work as at app start appsList will not have this apk
+            // downloader will download.
+
+            return null;
+        }
+
         // the secret are these two lines....
         pi.applicationInfo.sourceDir       = APKFilePath;
         pi.applicationInfo.publicSourceDir = APKFilePath;
         //
 
         Drawable d = pi.applicationInfo.loadIcon(pm);
-        appI.AppName = (String)pi.applicationInfo.loadLabel(pm);
+        appI.campaignId = campaign_id;
+        appI.appName = (String)pi.applicationInfo.loadLabel(pm);
         appI.packageName = (String)pi.applicationInfo.packageName;
+
         appI.iconUrl = storeDrawable(d, (String)pi.applicationInfo.packageName);
         appI.apkUrl = Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + "/" + filename + "?getApk";
+        appI.version = cloudAppInfo.getVersion();
+        appI.checksum = cloudAppInfo.getChecksum();
+        appI.size = cloudAppInfo.getSize(); //bytes
+
+        /*
+            Date date;
+            Float installPrice;
+            Float activatePrice;
+         */
 
         return appI;
     }
@@ -114,7 +142,6 @@ public class AppsList extends Application {
 
         return Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + "/" + packageName + ".PNG" + "?getIcon";
     }
-
 
 
     private static Bitmap drawableToBitmap (Drawable drawable) {

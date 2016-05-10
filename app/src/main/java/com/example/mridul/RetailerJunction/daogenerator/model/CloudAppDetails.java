@@ -6,13 +6,13 @@ package com.example.mridul.RetailerJunction.daogenerator.model;
  */
 public class CloudAppDetails {
 
-    private Long campaign_id;
+    private Long campaignId;
     private String name;
     private String version;
     private Integer size;
     private String downloadurl;
     private String packagename;
-    private String md5;
+    private String checksum;
     private Integer state;
     private Long listts;
     private Boolean downloaded;
@@ -21,30 +21,30 @@ public class CloudAppDetails {
     public CloudAppDetails() {
     }
 
-    public CloudAppDetails(Long campaign_id) {
-        this.campaign_id = campaign_id;
+    public CloudAppDetails(Long campaignId) {
+        this.campaignId = campaignId;
     }
 
-    public CloudAppDetails(Long campaign_id, String name, String version, Integer size, String downloadurl, String packagename, String md5, Integer state, Long listts, Boolean downloaded, Long apkts) {
-        this.campaign_id = campaign_id;
+    public CloudAppDetails(Long campaignId, String name, String version, Integer size, String downloadurl, String packagename, String checksum, Integer state, Long listts, Boolean downloaded, Long apkts) {
+        this.campaignId = campaignId;
         this.name = name;
         this.version = version;
         this.size = size;
         this.downloadurl = downloadurl;
         this.packagename = packagename;
-        this.md5 = md5;
+        this.checksum = checksum;
         this.state = state;
         this.listts = listts;
         this.downloaded = downloaded;
         this.apkts = apkts;
     }
 
-    public Long getCampaign_id() {
-        return campaign_id;
+    public Long getCampaignId() {
+        return campaignId;
     }
 
-    public void setCampaign_id(Long campaign_id) {
-        this.campaign_id = campaign_id;
+    public void setCampaignId(Long campaignId) {
+        this.campaignId = campaignId;
     }
 
     public String getName() {
@@ -87,12 +87,12 @@ public class CloudAppDetails {
         this.packagename = packagename;
     }
 
-    public String getMd5() {
-        return md5;
+    public String getChecksum() {
+        return checksum;
     }
 
-    public void setMd5(String md5) {
-        this.md5 = md5;
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
     }
 
     public Integer getState() {

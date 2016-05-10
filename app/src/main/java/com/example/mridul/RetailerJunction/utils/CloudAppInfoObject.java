@@ -15,7 +15,7 @@ package com.example.mridul.RetailerJunction.utils;
       "size": "1mb",
       "downloadurl": "https://s3-ap-southeast-1.amazonaws.com/lavaretailapp/apps/redBus_3.50.01.apk",
       "packagename": "com.redbus",
-      "md5": "12345",
+      "checksum": "12345",
       "state": null,
       "created_at": "2016-04-26 10:56:25",
       "updated_at": "2016-04-26 10:56:25",
@@ -32,7 +32,7 @@ public class CloudAppInfoObject {
     public int size;
     public String downloadurl;
     public String packagename;
-    public String md5;
+    public String checksum;
     public int state;
     public String created_at;
     public String updated_at;

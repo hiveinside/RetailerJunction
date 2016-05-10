@@ -23,13 +23,13 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Campaign_id = new Property(0, Long.class, "campaign_id", true, "CAMPAIGN_ID");
+        public final static Property CampaignId = new Property(0, Long.class, "campaignId", true, "CAMPAIGN_ID");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
         public final static Property Version = new Property(2, String.class, "version", false, "VERSION");
         public final static Property Size = new Property(3, Integer.class, "size", false, "SIZE");
         public final static Property Downloadurl = new Property(4, String.class, "downloadurl", false, "DOWNLOADURL");
         public final static Property Packagename = new Property(5, String.class, "packagename", false, "PACKAGENAME");
-        public final static Property Md5 = new Property(6, String.class, "md5", false, "MD5");
+        public final static Property Checksum = new Property(6, String.class, "checksum", false, "CHECKSUM");
         public final static Property State = new Property(7, Integer.class, "state", false, "STATE");
         public final static Property Listts = new Property(8, Long.class, "listts", false, "LISTTS");
         public final static Property Downloaded = new Property(9, Boolean.class, "downloaded", false, "DOWNLOADED");
@@ -49,13 +49,13 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CLOUD_APP_DETAILS\" (" + //
-                "\"CAMPAIGN_ID\" INTEGER PRIMARY KEY ," + // 0: campaign_id
+                "\"CAMPAIGN_ID\" INTEGER PRIMARY KEY ," + // 0: campaignId
                 "\"NAME\" TEXT," + // 1: name
                 "\"VERSION\" TEXT," + // 2: version
                 "\"SIZE\" INTEGER," + // 3: size
                 "\"DOWNLOADURL\" TEXT," + // 4: downloadurl
                 "\"PACKAGENAME\" TEXT," + // 5: packagename
-                "\"MD5\" TEXT," + // 6: md5
+                "\"CHECKSUM\" TEXT," + // 6: checksum
                 "\"STATE\" INTEGER," + // 7: state
                 "\"LISTTS\" INTEGER," + // 8: listts
                 "\"DOWNLOADED\" INTEGER," + // 9: downloaded
@@ -73,9 +73,9 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
     protected void bindValues(SQLiteStatement stmt, CloudAppDetails entity) {
         stmt.clearBindings();
  
-        Long campaign_id = entity.getCampaign_id();
-        if (campaign_id != null) {
-            stmt.bindLong(1, campaign_id);
+        Long campaignId = entity.getCampaignId();
+        if (campaignId != null) {
+            stmt.bindLong(1, campaignId);
         }
  
         String name = entity.getName();
@@ -103,9 +103,9 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
             stmt.bindString(6, packagename);
         }
  
-        String md5 = entity.getMd5();
-        if (md5 != null) {
-            stmt.bindString(7, md5);
+        String checksum = entity.getChecksum();
+        if (checksum != null) {
+            stmt.bindString(7, checksum);
         }
  
         Integer state = entity.getState();
@@ -139,13 +139,13 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
     @Override
     public CloudAppDetails readEntity(Cursor cursor, int offset) {
         CloudAppDetails entity = new CloudAppDetails( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // campaign_id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // campaignId
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // version
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // size
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // downloadurl
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // packagename
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // md5
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // checksum
             cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // state
             cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // listts
             cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0, // downloaded
@@ -157,13 +157,13 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, CloudAppDetails entity, int offset) {
-        entity.setCampaign_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setCampaignId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setVersion(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setSize(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setDownloadurl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setPackagename(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setMd5(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setChecksum(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setState(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setListts(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
         entity.setDownloaded(cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0);
@@ -173,7 +173,7 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(CloudAppDetails entity, long rowId) {
-        entity.setCampaign_id(rowId);
+        entity.setCampaignId(rowId);
         return rowId;
     }
     
@@ -181,7 +181,7 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
     @Override
     public Long getKey(CloudAppDetails entity) {
         if(entity != null) {
-            return entity.getCampaign_id();
+            return entity.getCampaignId();
         } else {
             return null;
         }

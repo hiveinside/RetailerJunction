@@ -26,7 +26,6 @@ public class RetailerJunction extends FragmentActivity implements ActionBar.TabL
     private static final int TURNING_OFF_HOTSPOT = 3;
     static httpServer h;
     Button button;
-    Context context;
 
     void ShowToast (String text) {
         Toast.makeText(RetailerJunction.this, text, Toast.LENGTH_SHORT).show();
@@ -35,7 +34,12 @@ public class RetailerJunction extends FragmentActivity implements ActionBar.TabL
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     // Tab titles
-    private String[] tabs = { "Hotspot", "Sync", "Console" };
+    private final String[] tabs = { "Hotspot", "Sync", "Console" };
+    private final int[] tabIcons = new int[] {
+            R.drawable.wifi,
+            R.drawable.wifi,
+            R.drawable.wifi
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,24 +54,27 @@ public class RetailerJunction extends FragmentActivity implements ActionBar.TabL
         // Parse APKs. Store data.
         // initialize appsList
         // // TODO: 5/7/2016
-        AppsList a = new AppsList(context);
+        new AppsList(this);
 
         // Initilization
-        viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
-        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
-
-        viewPager.setAdapter(mAdapter);
-        actionBar.setHomeButtonEnabled(false);
+        //actionBar.setHomeButtonEnabled(false);
         actionBar.setDisplayShowHomeEnabled(false);  // hides action bar icon
         actionBar.setDisplayShowTitleEnabled(false); // hides action bar title
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
+
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setAdapter(mAdapter);
+
         // Adding Tabs
-        for (String tab_name : tabs) {
-            actionBar.addTab(actionBar.newTab().setText(tab_name)
+        for (int i=0; i<tabs.length; i++) {
+            actionBar.addTab(actionBar.newTab().setText(tabs[i])
+                    //.setIcon(getResources().getDrawable(tabIcons[i]))
                     .setTabListener(this));
         }
+
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
@@ -85,24 +92,6 @@ public class RetailerJunction extends FragmentActivity implements ActionBar.TabL
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {

@@ -14,11 +14,9 @@ import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloadQueueSet;
 import com.liulishuo.filedownloader.FileDownloader;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +29,11 @@ public class AppDownloader {
     //private static final String DESTINATION = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/update.apk";
     private static String APK_DIR = "final_dir";
     OfflineAppsFragment fragment;
-    List<CloudAppInfoObject> list;
+    List<CloudAppDetails> downloadList;
 
-    public AppDownloader(OfflineAppsFragment offlineAppsFragment, List<CloudAppInfoObject> list) {
+    public AppDownloader(OfflineAppsFragment offlineAppsFragment, List<CloudAppDetails> downloadList) {
         fragment = offlineAppsFragment;
-        this.list = list;
+        this.downloadList = downloadList;
     }
 
     public void download(String ROOT_DIR) {
@@ -55,14 +53,14 @@ public class AppDownloader {
         final FileDownloadQueueSet queueSet = new FileDownloadQueueSet(mFileDownloadListener);
 
         final List<BaseDownloadTask> tasks = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            final String link = list.get(i).downloadurl;
-            final String destFile = APK_DIR + list.get(i).packagename + ".tmp"; // dont add .apk till completed + ".apk";
+        for (int i = 0; i < downloadList.size(); i++) {
+            final String link = downloadList.get(i).getDownloadurl();
+            final String destFile = APK_DIR + downloadList.get(i).getPackagename() + ".tmp"; // dont add .apk till completed + ".apk";
             Log.d(TAG, "download link : " + link + " " + destFile);
 
-            tasks.add(FileDownloader.getImpl().create(link).setPath(destFile).setListener(mFileDownloadListener).setTag(list.get(i)));
+            tasks.add(FileDownloader.getImpl().create(link).setPath(destFile).setListener(mFileDownloadListener).setTag(downloadList.get(i)));
         }
-        queueSet.disableCallbackProgressTimes(); // do not want each task's download progress's callback,
+        //queueSet.disableCallbackProgressTimes(); // do not want each task's download progress's callback,
         // we just consider which task will completed.
 
         // auto retry 1 time if download fail
@@ -77,25 +75,28 @@ public class AppDownloader {
     final FileDownloadListener mFileDownloadListener = new FileDownloadListener() {
         @Override
         protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "download pending : "+task.getPath() +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
+            Log.d(TAG, "download pending : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
         }
 
         @Override
         protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "download progress : "+task.getPath() +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
+            //Log.d(TAG, "download progress : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+            fragment.onApkDownloadProgress(task, soFarBytes, totalBytes);
+
         }
 
         @Override
         protected void blockComplete(BaseDownloadTask task) {
-            Log.d(TAG, "download blockComplete : "+task.getPath());
+            Log.d(TAG, "download blockComplete : " + task.getPath());
         }
 
         @Override
         protected void completed(BaseDownloadTask task) {
-            Log.d(TAG, "download completed : "+task.getPath());
+            Log.d(TAG, "download completed : " + task.getPath());
 
             // match checksum, delete if doesnt match
             // match with what was sent from cloud
+            // // TODO: 5/10/2016 match checksum
 
             // rename to .apk
             String currentName = task.getPath();
@@ -114,8 +115,8 @@ public class AppDownloader {
             CloudAppDetailsDao appEntryDao = daoSession.getCloudAppDetailsDao();
 
             //get record
-            long campaign_id = ((CloudAppInfoObject)task.getTag()).id;
-            CloudAppDetails c = appEntryDao.queryBuilder().where(CloudAppDetailsDao.Properties.Campaign_id.eq(campaign_id)).limit(1).unique();
+            long campaignId = ((CloudAppDetails) task.getTag()).getCampaignId();
+            CloudAppDetails c = appEntryDao.queryBuilder().where(CloudAppDetailsDao.Properties.CampaignId.eq(campaignId)).limit(1).unique();
 
             if (c != null) {
                 c.setDownloaded(true);
@@ -127,34 +128,36 @@ public class AppDownloader {
             // Update local data structures -- appsList
 
             // refresh UI
-            fragment.onAppDownloadCompleted(task);
+            fragment.onApkDownloadCompleted(task);
         }
 
         @Override
         protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "download paused : "+task.getPath() +" sofar "+soFarBytes + " TotalBytes : "+totalBytes);
+            Log.d(TAG, "download paused : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
         }
 
         @Override
         protected void error(BaseDownloadTask task, Throwable e) {
             Log.d(TAG, "download error : " + task.getPath() + " Exception " + e);
 
-            // decide how to restart in failed cases.
-            // restart when network in available
-
-
-            // Update local data structures -- appsList
-            // update Database
             // refresh UI
+            fragment.onApkDownloadError(task);
+
+            // pause/stop rest of the queue
+            FileDownloader.getImpl().pause(mFileDownloadListener);
         }
 
         @Override
         protected void warn(BaseDownloadTask task) {
-            Log.d(TAG, "download warn : "+task.getPath());
+            Log.d(TAG, "download warn : " + task.getPath());
         }
     };
 
-    public interface onAppDownloadCompleted {
-        public void onAppDownloadCompleted(BaseDownloadTask task);
+    public interface AppDownloadCallback {
+        public void onApkDownloadCompleted(BaseDownloadTask task);
+
+        public void onApkDownloadError(BaseDownloadTask task);
+
+        public void onApkDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes);
     }
 }

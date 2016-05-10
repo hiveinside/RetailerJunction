@@ -48,10 +48,10 @@ public class OfflineListAdapter extends ArrayAdapter<AppInfoObject> {
         }
 
         TextView title = (TextView) one_row.findViewById(R.id.appTitle);
-        title.setText(appInfo.AppName);
+        title.setText(appInfo.appName);
 
         TextView detail = (TextView) one_row.findViewById(R.id.appDetail);
-        detail.setText(appInfo.packageName + " | " + appInfo.size);
+        detail.setText(appInfo.packageName + "  |  " + appInfo.size);
 
         return one_row;
     }
