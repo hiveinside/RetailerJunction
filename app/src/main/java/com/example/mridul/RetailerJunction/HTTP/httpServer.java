@@ -2,16 +2,18 @@ package com.example.mridul.RetailerJunction.http;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.example.mridul.RetailerJunction.db.DatabaseHelper;
 import com.example.mridul.RetailerJunction.db.PromoterInfoObject;
-import com.example.mridul.RetailerJunction.db.dbDataObject;
-import com.example.mridul.RetailerJunction.db.installRecordObject;
+import com.example.mridul.RetailerJunction.db.SubmitDataObject;
 import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.RetailerJunction.utils.Constants;
-import com.example.mridul.RetailerJunction.utils.DeviceInfoObject;
+import com.example.mridul.helloworld.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,9 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -96,8 +96,8 @@ public class httpServer extends NanoHTTPD {
 
         } else if (Method.POST.equals(method)) {
             // Save customer info for now. Ack to customer
-            DeviceInfoObject deviceInfo;
-            String deviceInfoJson;
+            SubmitDataObject datafromKit;
+            String datafromKitJSON;
 
             try {
                 session.parseBody(map);
@@ -107,32 +107,24 @@ public class httpServer extends NanoHTTPD {
                 return newFixedLengthResponse(re.getStatus(), MIME_PLAINTEXT, re.getMessage());
             }
 
-            Type type = new TypeToken<DeviceInfoObject>() {}.getType();
+            Type type = new TypeToken<SubmitDataObject>() {}.getType();
             Gson gson = new Gson();
-            deviceInfoJson = map.get("postData");
-            deviceInfo = gson.fromJson(deviceInfoJson, type);
+            datafromKitJSON = map.get("postData");
+            datafromKit = gson.fromJson(datafromKitJSON, type);
 
             // save to database. Later send to cloud
-            Log.e("CustomerData: ", deviceInfoJson);
+            Log.e("CustomerData: ", datafromKitJSON);
             {
-                dbDataObject data = new dbDataObject();
-                data.promoterInfo = new PromoterInfoObject();
-
-                data.promoterInfo.promoterId = "9243090116";
-                data.promoterInfo.shareAppVersion = "1.0.0";
-
-                data.installRecords = getTestRecords();
-                data.deviceDetails = deviceInfo;
+                getPromoterInfo(datafromKit.promoterInfo);
 
                 DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context.getApplicationContext());
-                Log.e("dbObj: ", gson.toJson(data));
-                databaseHelper.add(gson.toJson(data));
+                Log.e("dbObj: ", gson.toJson(datafromKit));
+                databaseHelper.add(gson.toJson(datafromKit));
             }
 
             // Ack to customer
             return newFixedLengthResponse("Customer Data submitted");
             //return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "Customer Data submitted");
-
         }
 
         // any other request
@@ -144,7 +136,7 @@ public class httpServer extends NanoHTTPD {
             res.addHeader("Accept-Ranges", "bytes");
             res.addHeader("Content-Length", "" + inputStream.available());
             res.addHeader( "Content-Disposition", "attachment; filename=\"" + "customerkit.apk" + "\"");
-            // res.addHeader("ETag", etag); //// TODO: 4/19/2016
+            // res.addHeader("ETag", etag); //// TODO: 4/19/2016 figure how to set ETAG.. and is it really needed?
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -176,30 +168,20 @@ public class httpServer extends NanoHTTPD {
         //return super.serve(session);
     }
 
-    private List<installRecordObject> getTestRecords() {
-        List<installRecordObject> records = new ArrayList<>();
+    private void getPromoterInfo(PromoterInfoObject promoterInfo) {
+        // // TODO: 5/17/2016 get this once login functionality is done
+        promoterInfo.promoterId = new String("9243090116");
 
-        installRecordObject tmp = new installRecordObject();
+        TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 
-        tmp.packageName = "test1";
-        tmp.md5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        tmp.size = 11111111;
-        tmp.timestamp = System.currentTimeMillis();
-        records.add(0, tmp);
+        // TODO: 5/17/2016 get both/all IMEIs
+        promoterInfo.imei = telephonyManager.getDeviceId();
+        promoterInfo.android_id = Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        promoterInfo.model = Build.BRAND + "," + Build.PRODUCT + "," + Build.MODEL;
 
-        tmp.packageName = "test2";
-        tmp.md5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        tmp.size = 22222222;
-        tmp.timestamp = System.currentTimeMillis();
-        records.add(1, tmp);
-
-        tmp.packageName = "test3";
-        tmp.md5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        tmp.size = 33333333;
-        tmp.timestamp = System.currentTimeMillis();
-        records.add(2, tmp);
-
-        return records;
+        // get your own version
+        promoterInfo.shareAppVersionCode = BuildConfig.VERSION_CODE;
+        promoterInfo.shareAppVersionName = BuildConfig.VERSION_NAME;
     }
 
     Response serveFile(String uri, Map<String, String> header, File file, String mime) {

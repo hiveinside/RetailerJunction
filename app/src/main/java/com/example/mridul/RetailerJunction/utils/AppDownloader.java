@@ -31,14 +31,14 @@ public class AppDownloader {
     OfflineAppsFragment fragment;
     List<CloudAppDetails> downloadList;
 
-    public AppDownloader(OfflineAppsFragment offlineAppsFragment, List<CloudAppDetails> downloadList) {
+    public AppDownloader(OfflineAppsFragment offlineAppsFragment) {
         fragment = offlineAppsFragment;
-        this.downloadList = downloadList;
     }
 
-    public void download(String ROOT_DIR) {
+    public void download(String ROOT_DIR, List<CloudAppDetails> dList) {
 
         APK_DIR = ROOT_DIR + "/apks/";
+        this.downloadList = dList;
 
         /*
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);

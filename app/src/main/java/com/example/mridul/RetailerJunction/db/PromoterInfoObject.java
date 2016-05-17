@@ -6,5 +6,9 @@ package com.example.mridul.RetailerJunction.db;
 
 public class PromoterInfoObject {
     public String promoterId;
-    public String shareAppVersion;
+    public String imei;
+    public String android_id;
+    public String model;
+    public int shareAppVersionCode;
+    public String shareAppVersionName;
 }

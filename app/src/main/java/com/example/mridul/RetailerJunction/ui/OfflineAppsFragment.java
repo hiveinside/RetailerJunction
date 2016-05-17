@@ -219,8 +219,8 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
 
         // download if there is anything to download.
         if (downloadList.size() > 0) {
-            AppDownloader ad = new AppDownloader(this, downloadList);
-            ad.download(getActivity().getApplicationContext().getFilesDir().getAbsolutePath());
+            AppDownloader ad = new AppDownloader(this);
+            ad.download(getActivity().getApplicationContext().getFilesDir().getAbsolutePath(), downloadList);
         } else {
             UpdateUI(null, NOTHINGTODOWNLOAD);
         }
@@ -236,6 +236,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         if( appsListTask != null)
             appsListTask.cancel(true);
 
+        // do this if downloads are active. Otherwise it will show error unnecessarily
         FileDownloader.getImpl().pauseAll();
 
         UpdateUI(null, ERROR);

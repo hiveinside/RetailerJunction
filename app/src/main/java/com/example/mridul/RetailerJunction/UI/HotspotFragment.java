@@ -51,7 +51,7 @@ public class HotspotFragment extends Fragment {
     }
 
     public static void updateUI() {
-        //Button button = (Button)findViewById(R.id.HotSpot);
+        //Button button = (Button)findViewById(R.campaign_id.HotSpot);
         if (button != null) {
             int state = (int) button.getTag();
             switch (state) {

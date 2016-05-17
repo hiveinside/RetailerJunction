@@ -104,11 +104,8 @@ public class AppsList extends Application {
         appI.checksum = cloudAppInfo.getChecksum();
         appI.size = cloudAppInfo.getSize(); //bytes
 
-        /*
-            Date date;
-            Float installPrice;
-            Float activatePrice;
-         */
+        appI.downloadDone = false; //used by client
+        appI.installDone = 0; //used by client
 
         return appI;
     }

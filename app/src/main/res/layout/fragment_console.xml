@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="05dp"
+    android:layout_marginBottom="05dp"
+    android:layout_marginLeft="08dp"
+    android:layout_marginRight="8dp">
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -10,6 +15,5 @@
         android:background="@color/darkblue"
         android:text="Welcome to Console."
         android:layout_gravity="bottom"
-        android:id="@+id/HotSpot"
-        />
+        android:id="@+id/HotSpot"/>
 </LinearLayout>

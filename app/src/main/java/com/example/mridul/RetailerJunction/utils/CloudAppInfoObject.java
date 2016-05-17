@@ -9,7 +9,7 @@ package com.example.mridul.RetailerJunction.utils;
   "success": true,
   "data": [
     {
-      "id": 1,
+      "campaign_id": 1,
       "name": "Redbus",
       "version": null,
       "size": "1mb",
@@ -26,7 +26,7 @@ package com.example.mridul.RetailerJunction.utils;
 }
  */
 public class CloudAppInfoObject {
-    public long id;
+    public long campaign_id;
     public String name;
     public String version;
     public int size;

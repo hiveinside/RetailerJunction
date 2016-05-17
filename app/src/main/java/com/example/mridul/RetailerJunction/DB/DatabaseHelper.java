@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_INSTALL_RECORDS_TABLE = "CREATE TABLE " + TABLE_INSTALL_RECORDS +
             "(" +
-            "id" + " INTEGER PRIMARY KEY," +
+            "campaign_id" + " INTEGER PRIMARY KEY," +
             "json_data" + " TEXT NOT NULL," +
             "timestamp" + " INTEGER," +
             "isUploaded" + " INTEGER" +

@@ -10,7 +10,7 @@ android:layout_height="match_parent" android:keepScreenOn="true">
         android:layout_marginTop="05dp"
         android:layout_marginBottom="05dp"
         android:layout_marginLeft="08dp"
-        android:layout_marginRight="08dp">
+        android:layout_marginRight="0dp">
 
         <android.support.v4.widget.SwipeRefreshLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

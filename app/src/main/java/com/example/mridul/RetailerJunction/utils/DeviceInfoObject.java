@@ -1,7 +1,7 @@
 package com.example.mridul.RetailerJunction.utils;
 
 /**
- * Created by satish on 4/12/16.
+ * Created by Mridul on 4/12/2016.
  */
 
 public class DeviceInfoObject {
@@ -23,16 +23,16 @@ public class DeviceInfoObject {
     public String operator; //MCC/MNC40445
     public String launcher_app; //which launcher is used
     public String phone_num; // try to get phone number
-    public String android_api; // API level
-    public int networkStatus; //2g/3g/4g/wifi
-    public int rooted_yes_no; // rooted status
-    public int internalAvail; //available internal mem
-    public int internalTotal; //Total internal mem
-    public int extAvail; //available internal mem
-    public int extTotal; //Total external mem
-    public int ramSize; //RAM size
+    public int android_api; // API level
+    public int network_status; //2g/3g/4g/wifi
+    public int rooted; // rooted status
+    public int internal_avail; //available internal mem
+    public int internal_total; //Total internal mem
+    public int external_avail; //available internal mem
+    public int external_total; //Total external mem
+    public int ram; //RAM size
+    public String kit_version;// kit app version
 
-    public String kitVersion;// kit app version
     // figure this out
     /*
     public long timestamp;
