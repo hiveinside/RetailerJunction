@@ -8,7 +8,7 @@ public class DAOGenerator {
 
 
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(10, "com.example.mridul.RetailerJunction.daogenerator.model");
+        Schema schema = new Schema(13, "com.example.mridul.RetailerJunction.daogenerator.model");
 
         /*
          * Table to store current available list from cloud
@@ -34,7 +34,11 @@ public class DAOGenerator {
         /*
          * Table to store install records - to be sent to cloud
          */
-
+        Entity installRecord = schema.addEntity("InstallRecords");
+        installRecord.addIdProperty().autoincrement().primaryKey();
+        installRecord.addStringProperty("json_data").notNull();
+        installRecord.addLongProperty("timestamp").notNull();
+        installRecord.addIntProperty("isUploaded").notNull();
 
         new DaoGenerator().generateAll(schema, "app/src/main/java");
     }

@@ -2,6 +2,14 @@ package com.example.mridul.RetailerJunction.utils;
 
 import java.util.Date;
 
+/*
+ *   ************************************************************
+ *   ******************       WARNING            ****************
+ *   ************************************************************
+ *
+ *   ENSURE THIS CLASS IS EXACTLY SAME IN RETAIL JUNCTION CLIENT
+ *
+ */
 
 public class AppInfoObject {
 

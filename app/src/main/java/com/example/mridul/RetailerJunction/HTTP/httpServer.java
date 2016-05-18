@@ -2,12 +2,16 @@ package com.example.mridul.RetailerJunction.http;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.example.mridul.RetailerJunction.db.DatabaseHelper;
+import com.example.mridul.RetailerJunction.daogenerator.model.DaoMaster;
+import com.example.mridul.RetailerJunction.daogenerator.model.DaoSession;
+import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecords;
+import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecordsDao;
 import com.example.mridul.RetailerJunction.db.PromoterInfoObject;
 import com.example.mridul.RetailerJunction.db.SubmitDataObject;
 import com.example.mridul.RetailerJunction.ui.RetailerApplication;
@@ -117,9 +121,12 @@ public class httpServer extends NanoHTTPD {
             {
                 getPromoterInfo(datafromKit.promoterInfo);
 
+                addRecord(gson.toJson(datafromKit));
+/*
                 DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context.getApplicationContext());
                 Log.e("dbObj: ", gson.toJson(datafromKit));
                 databaseHelper.add(gson.toJson(datafromKit));
+*/
             }
 
             // Ack to customer
@@ -288,6 +295,23 @@ public class httpServer extends NanoHTTPD {
         res = newFixedLengthResponse(Response.Status.OK, mime, new FileInputStream(file), (int) file.length());
         res.addHeader("Accept-Ranges", "bytes");
         return res;
+    }
+
+    private void addRecord(String json_data) {
+        // write to database
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        DaoMaster daoMaster = new DaoMaster(db);
+        DaoSession daoSession = daoMaster.newSession();
+        InstallRecordsDao installRecordsDao = daoSession.getInstallRecordsDao();
+
+        InstallRecords installRecords = new InstallRecords();
+
+        installRecords.setJson_data(json_data);
+        installRecords.setTimestamp(System.currentTimeMillis());
+        installRecords.setIsUploaded(0); // Not uploaded yet
+
+        installRecordsDao.insert(installRecords);
     }
 }
 

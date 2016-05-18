@@ -4,6 +4,15 @@ package com.example.mridul.RetailerJunction.utils;
  * Created by Mridul on 4/12/2016.
  */
 
+/*
+ *   ************************************************************
+ *   ******************       WARNING            ****************
+ *   ************************************************************
+ *
+ *   ENSURE THIS CLASS IS EXACTLY SAME IN RETAIL JUNCTION CLIENT
+ *
+ */
+
 public class DeviceInfoObject {
     public String imei; // take care of multiple SIM case
     public String android_device_id;
