@@ -3,20 +3,19 @@ package com.example.mridul.RetailerJunction.ui;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.mridul.RetailerJunction.http.httpServer;
 import com.example.mridul.RetailerJunction.utils.AppsList;
+import com.example.mridul.RetailerJunction.utils.LoginUtils;
 import com.example.mridul.helloworld.R;
 
-public class RetailerJunction extends FragmentActivity implements ActionBar.TabListener {
+public class RetailerJunctionActivity extends FragmentActivity implements ActionBar.TabListener {
 
     private BroadcastReceiver mBroadcastReceiver;
 
@@ -28,7 +27,7 @@ public class RetailerJunction extends FragmentActivity implements ActionBar.TabL
     Button button;
 
     void ShowToast (String text) {
-        Toast.makeText(RetailerJunction.this, text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(RetailerJunctionActivity.this, text, Toast.LENGTH_SHORT).show();
     }
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
@@ -44,8 +43,13 @@ public class RetailerJunction extends FragmentActivity implements ActionBar.TabL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
+
+        if (LoginUtils.isLoggedIn(this) == false) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+
         RetailerApplication.setRJContext(this);
         RetailerApplication.setIconDir(getApplicationContext().getFilesDir().getAbsolutePath() + "/icons/");
         RetailerApplication.setApkDir(getApplicationContext().getFilesDir().getAbsolutePath() + "/apks/");

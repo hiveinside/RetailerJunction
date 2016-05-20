@@ -94,7 +94,7 @@ public class ConsoleFragment extends Fragment {
             tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                     TableRow.LayoutParams.WRAP_CONTENT));
             tv.setGravity(Gravity.CENTER);
-            tv.setTextSize(18);
+            tv.setTextSize(14);
             tv.setPadding(5, 5, 5, 5);
             tv.setText(c);
             rowHeader.addView(tv);

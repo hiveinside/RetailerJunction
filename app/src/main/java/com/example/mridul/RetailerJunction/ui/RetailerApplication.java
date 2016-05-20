@@ -15,11 +15,11 @@ public class RetailerApplication extends Application {
         FileDownloader.init(getApplicationContext());
     }
 
-    static RetailerJunction mRetailerJunction;
-    public static RetailerJunction getRJContext(){
+    static RetailerJunctionActivity mRetailerJunction;
+    public static RetailerJunctionActivity getRJContext(){
         return mRetailerJunction;
     }
-    public static void setRJContext(RetailerJunction rj) {
+    public static void setRJContext(RetailerJunctionActivity rj) {
         mRetailerJunction = rj;
     }
 

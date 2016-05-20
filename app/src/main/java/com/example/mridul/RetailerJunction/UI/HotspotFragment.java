@@ -11,13 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mridul.RetailerJunction.helpers.PreferencesHelper;
 import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.RetailerJunction.utils.Constants;
 import com.example.mridul.RetailerJunction.http.httpServer;
+import com.example.mridul.RetailerJunction.utils.LoginUtils;
 import com.example.mridul.RetailerJunction.wifi.WifiApControl;
 import com.example.mridul.helloworld.R;
 
@@ -41,6 +44,7 @@ public class HotspotFragment extends Fragment {
     WifiApControl apMgr;
 
     static Button button;
+    static ImageButton logoutbutton;
     static TextView ssidText;
     static TextView ipText;
     static Context context;
@@ -110,7 +114,22 @@ public class HotspotFragment extends Fragment {
         button = (Button) getActivity().findViewById(R.id.HotSpotButton);
         ssidText = (TextView) getActivity().findViewById(R.id.hotspotdetails);
         ipText = (TextView) getActivity().findViewById(R.id.ipdetails);
+        logoutbutton = (ImageButton) getActivity().findViewById(R.id.logoutButton);
 
+        logoutbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (LoginUtils.isLoggedIn(getActivity()) == true) {
+                    PreferencesHelper.getInstance(getActivity()).saveToken("");
+                    PreferencesHelper.getInstance(getActivity()).saveLoginState(false);
+
+                    ShowToast("Logout Successful");
+
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    getActivity().finish();
+                }
+            }
+        });
 
         context = getActivity().getApplicationContext();
 
@@ -195,6 +214,18 @@ public class HotspotFragment extends Fragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+
+        //stop everything
+        if (h != null)
+            h.stop(); // Stop hotspot
+
+        if (apMgr!= null)
+            apMgr.disable(); // Stop webserver
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
@@ -205,5 +236,6 @@ public class HotspotFragment extends Fragment {
         if (apMgr!= null)
             apMgr.disable(); // Stop webserver
     }
+
 }
 
