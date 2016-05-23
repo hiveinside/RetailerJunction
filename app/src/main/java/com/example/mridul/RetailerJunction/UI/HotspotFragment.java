@@ -43,6 +43,8 @@ public class HotspotFragment extends Fragment {
     static WifiConfiguration wifiConfiguration;
     WifiApControl apMgr;
 
+    static boolean wasWiFiEnabled = false;
+
     static Button button;
     static ImageButton logoutbutton;
     static TextView ssidText;
@@ -155,6 +157,9 @@ public class HotspotFragment extends Fragment {
                         return;
                     }
 
+                    wasWiFiEnabled = mWifiManager.isWifiEnabled();
+                    mWifiManager.setWifiEnabled(false);
+
                     //Start hotspot - without user config.
                     boolean result = apMgr.enable(false, context);
                     if (result == true) {
@@ -223,6 +228,10 @@ public class HotspotFragment extends Fragment {
 
         if (apMgr!= null)
             apMgr.disable(); // Stop webserver
+
+        if (wasWiFiEnabled == true) {
+            mWifiManager.setWifiEnabled(true);
+        }
     }
 
     @Override
