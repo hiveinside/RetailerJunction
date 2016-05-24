@@ -22,6 +22,7 @@ import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.RetailerJunction.utils.CloudAppsList;
 import com.example.mridul.RetailerJunction.utils.Constants;
+import com.example.mridul.RetailerJunction.utils.SubmitRecords;
 import com.example.mridul.helloworld.R;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloader;
@@ -109,6 +110,11 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
 
         CloudAppsList cloudAppsList = new CloudAppsList(this);
         cloudAppsList.FetchCloudAppsList(this.getActivity());
+
+
+        // also submit any pending data
+        SubmitRecords s = new SubmitRecords();
+        s.execute();
 
         return newAppsList;
     }

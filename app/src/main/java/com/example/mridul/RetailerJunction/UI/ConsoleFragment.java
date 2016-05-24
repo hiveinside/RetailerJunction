@@ -3,11 +3,9 @@ package com.example.mridul.RetailerJunction.ui;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,16 +25,7 @@ import com.example.mridul.helloworld.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,9 +33,6 @@ import java.util.List;
  */
 public class ConsoleFragment extends Fragment {
     TableLayout tableLayout;
-    Button button;
-    Context appcontext;
-    Context activitycontext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,16 +47,6 @@ public class ConsoleFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         tableLayout = (TableLayout) getActivity().findViewById(R.id.recordTable);
-        button = (Button) getActivity().findViewById(R.id.submit);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // submit async
-                SubmitRecordsTask s = new SubmitRecordsTask();
-                s.execute();
-            }
-        });
 
         addTableHeaders();
     }
@@ -152,66 +128,5 @@ public class ConsoleFragment extends Fragment {
             tableLayout.addView(row);
         }
         db.close();
-    }
-
-    private class SubmitRecordsTask extends AsyncTask<Void, Void, Boolean> {
-
-        protected void onPostExecute(Boolean result) {
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-
-            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
-            SQLiteDatabase db = helper.getReadableDatabase();
-            DaoMaster daoMaster = new DaoMaster(db);
-            DaoSession daoSession = daoMaster.newSession();
-            InstallRecordsDao installRecordsDao = daoSession.getInstallRecordsDao();
-
-
-            List<InstallRecords> installRecordsList;
-            installRecordsList = null;
-
-            if (installRecordsDao != null) {
-                installRecordsList = installRecordsDao.loadAll();
-            }
-
-            for (int i=0; i<installRecordsList.size(); i++) {
-
-                if (installRecordsList.get(i).getIsUploaded() == 0) {
-
-                    try {
-                        String URL = Constants.UPLOADDATA_API_URL + Constants.AUTH_TOKEN;
-                        HttpPost httpPost = new HttpPost(URL);
-                        HttpClient client = new DefaultHttpClient();
-
-                        Log.e("SubmitRecordsTask", installRecordsList.get(i).getJson_data());
-                        ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-                        postParameters.add(new BasicNameValuePair("values", installRecordsList.get(i).getJson_data()));
-
-                        //httpPost.setEntity(new StringEntity(obj.toString()));
-                        httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
-
-
-                        HttpResponse response = client.execute(httpPost);
-                        if (response.getStatusLine().getStatusCode() != 200) {
-                            Log.e("Submit data Failed: ", response.toString());
-                            return false;
-                        }
-
-                        // update uploaded flag
-                        InstallRecords dbItem = installRecordsDao.loadByRowId(i+1); // row id starts from 1
-                        dbItem.setIsUploaded(1); // 1 - is yes
-                        installRecordsDao.insertOrReplace(installRecordsList.get(i));
-
-                    } catch (Exception e) {
-                        Log.e("Submit data Failed: ", e.getMessage());
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
     }
 }

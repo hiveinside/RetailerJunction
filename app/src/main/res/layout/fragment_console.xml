@@ -22,15 +22,5 @@
             android:padding="5dp">
         </TableLayout>
 
-        <Button
-            android:id="@+id/submit"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Submit"
-            android:textSize="20dp"
-            android:textColor="@color/white"
-            android:background="@color/darkblue"
-            android:layout_alignParentBottom="true" />
-
     </RelativeLayout>
 </RelativeLayout>
