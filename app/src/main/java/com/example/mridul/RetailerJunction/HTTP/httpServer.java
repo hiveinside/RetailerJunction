@@ -132,23 +132,54 @@ public class httpServer extends NanoHTTPD {
             // Ack to customer
             return newFixedLengthResponse("Customer Data submitted");
             //return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "Customer Data submitted");
+        } else if (Method.GET.equals(method) && parms.get("KIT_APK_LINK") != null) {
+
+            AssetManager mngr = context.getAssets();
+            Response res = null;
+            try {
+                InputStream inputStream = mngr.open("customerkit.apk");
+                res = newFixedLengthResponse(Response.Status.OK, "application/octet-stream", inputStream, (int) inputStream.available());
+                res.addHeader("Accept-Ranges", "bytes");
+                res.addHeader("Content-Length", "" + inputStream.available());
+                res.addHeader( "Content-Disposition", "attachment; filename=\"" + "customerkit.apk" + "\"");
+                // res.addHeader("ETag", etag); //// TODO: 4/19/2016 figure how to set ETAG.. and is it really needed?
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return res;
+        } else if (Method.GET.equals(method) && parms.get("SHARE_APK_LINK") != null) {
+
+            AssetManager mngr = context.getAssets();
+            Response res = null;
+            try {
+                InputStream inputStream = mngr.open("shareapp.apk");
+                res = newFixedLengthResponse(Response.Status.OK, "application/octet-stream", inputStream, (int) inputStream.available());
+                res.addHeader("Accept-Ranges", "bytes");
+                res.addHeader("Content-Length", "" + inputStream.available());
+                res.addHeader( "Content-Disposition", "attachment; filename=\"" + "shareapp.apk" + "\"");
+                // res.addHeader("ETag", etag); //// TODO: 4/19/2016 figure how to set ETAG.. and is it really needed?
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return res;
         }
 
+        //return super.serve(session);
         // any other request
+        // server html page
         AssetManager mngr = context.getAssets();
         Response res = null;
         try {
-            InputStream inputStream = mngr.open("customerkit.apk");
-            res = newFixedLengthResponse(Response.Status.OK, "application/octet-stream", inputStream, (int) inputStream.available());
-            res.addHeader("Accept-Ranges", "bytes");
-            res.addHeader("Content-Length", "" + inputStream.available());
-            res.addHeader( "Content-Disposition", "attachment; filename=\"" + "customerkit.apk" + "\"");
-            // res.addHeader("ETag", etag); //// TODO: 4/19/2016 figure how to set ETAG.. and is it really needed?
+            InputStream inputStream = mngr.open("index.html");
+            res = newFixedLengthResponse(Response.Status.OK, NanoHTTPD.MIME_HTML, inputStream, (int) inputStream.available());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         return res;
+
 
 /*
         else {
