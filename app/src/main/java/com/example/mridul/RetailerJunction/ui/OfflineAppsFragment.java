@@ -22,6 +22,7 @@ import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.RetailerJunction.utils.CloudAppsList;
 import com.example.mridul.RetailerJunction.utils.Constants;
+import com.example.mridul.RetailerJunction.utils.GetIncomeReport;
 import com.example.mridul.RetailerJunction.utils.SubmitRecords;
 import com.example.mridul.helloworld.R;
 import com.liulishuo.filedownloader.BaseDownloadTask;
@@ -115,6 +116,14 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         // also submit any pending data
         SubmitRecords s = new SubmitRecords();
         s.execute();
+
+        // also fetch last week income report
+        GetIncomeReport g = new GetIncomeReport(getActivity());
+        g.execute();
+
+        // also check for self update
+        // TODO: 6/1/2016 check for self update
+
 
         return newAppsList;
     }

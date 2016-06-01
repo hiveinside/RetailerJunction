@@ -11,11 +11,23 @@ android:keepScreenOn="true">
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp">
 
+        <Button
+            android:id="@+id/HotSpotButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:background="@drawable/button"
+            android:text="Turn ON Hotspot"
+            android:onClick="installApps"
+            android:textAllCaps="false"
+            android:layout_centerVertical="true"/>
+
         <TextView
             android:id="@+id/hotspotdetails"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:layout_above="@+id/ipdetails"
+            android:layout_below="@id/HotSpotButton"
             android:layout_alignParentStart="true"
             android:gravity="center_vertical"/>
 
@@ -23,23 +35,21 @@ android:keepScreenOn="true">
             android:id="@+id/ipdetails"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:layout_above="@+id/HotSpotButton"
+            android:layout_below="@id/hotspotdetails"
             android:layout_alignParentStart="true"
             android:gravity="center_vertical"/>
 
-        <Button
-            android:id="@+id/HotSpotButton"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:background="@drawable/button"
-            android:text="Turn ON Hotspot"
-            android:onClick="installApps"
-            android:textAllCaps="false"
-            android:layout_weight="0.0"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true" />
+        <TextView
+            android:id="@+id/logouttext"
+            android:text="Sign out "
+            android:textSize="10dp"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginBottom="20dp"
+            android:layout_toStartOf="@+id/logoutButton"
+            android:layout_alignParentBottom="true"/>
+
 
         <ImageButton
             android:layout_width="25dp"

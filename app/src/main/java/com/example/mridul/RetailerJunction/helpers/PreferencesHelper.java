@@ -11,6 +11,7 @@ public class PreferencesHelper {
     private static final String LOGIN_STATE = "Login_State";
     private static final String UPDATE_CHECK = "Update_Check";
     private static final String TOKEN = "token";
+    private static final String WEEK_INCOME = "Week_Income";
 
     private static Context context = null;
     private static PreferencesHelper pHelper = null;
@@ -47,6 +48,16 @@ public class PreferencesHelper {
     public void saveLoginState(boolean state) {
         SharedPreferences.Editor editor = context.getSharedPreferences(PHONE_HELPER, 0).edit();
         editor.putBoolean(LOGIN_STATE, state);
+        editor.commit();
+    }
+
+    public String getWeekIncome() {
+        return context.getSharedPreferences(PHONE_HELPER, 0).getString(WEEK_INCOME, null);
+    }
+
+    public void saveWeekIncome(String json) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PHONE_HELPER, 0).edit();
+        editor.putString(WEEK_INCOME, json);
         editor.commit();
     }
 }

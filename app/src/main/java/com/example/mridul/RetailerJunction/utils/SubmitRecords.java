@@ -67,7 +67,8 @@ public class SubmitRecords extends AsyncTask<Void, Void, Boolean> {
                     HttpResponse response = client.execute(httpPost);
                     if (response.getStatusLine().getStatusCode() != 200) {
                         Log.e("Submit data Failed: ", response.toString());
-                        return false;
+                        //return false;
+                        continue;
                     }
 
                     // update uploaded flag

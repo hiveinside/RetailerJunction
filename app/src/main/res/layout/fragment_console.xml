@@ -1,26 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:weightSum="4"
+    android:padding="3dp"
+    android:orientation="vertical"
     android:keepScreenOn="true">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="05dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="08dp"
-        android:layout_marginRight="8dp"
+        android:layout_height="0dp"
+        android:background="@drawable/layoutborder"
+        android:layout_weight="2"
         android:orientation="vertical">
 
         <TableLayout
             android:stretchColumns="*"
-            android:id="@+id/recordTable"
+            android:id="@+id/uploadTable"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:layout_height="wrap_content">
+        </TableLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="@drawable/layoutborder"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="2">
+
+        <TableLayout
+            android:stretchColumns="*"
+            android:id="@+id/incomeTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         </TableLayout>
 
-    </RelativeLayout>
-</RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
