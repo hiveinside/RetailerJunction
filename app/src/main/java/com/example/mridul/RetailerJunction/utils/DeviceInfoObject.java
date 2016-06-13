@@ -34,13 +34,15 @@ public class DeviceInfoObject {
     public String phone_num; // try to get phone number
     public int android_api; // API level
     public int network_status; //2g/3g/4g/wifi
-    public int rooted; // rooted status
-    public int internal_avail; //available internal mem
-    public int internal_total; //Total internal mem
-    public int external_avail; //available internal mem
-    public int external_total; //Total external mem
-    public int ram; //RAM size
-    public String kit_version;// kit app version
+    public boolean rooted; // rooted status
+    public long internal_avail; //available internal mem
+    public long internal_total; //Total internal mem
+    public long external_avail; //available internal mem
+    public long external_total; //Total external mem
+    public long ram_total; //RAM size
+    public long ram_avail; //RAM size
+    public int kit_version_code;// kit app version
+    public String kit_version_name;// kit app version
 
     // figure this out
     /*
