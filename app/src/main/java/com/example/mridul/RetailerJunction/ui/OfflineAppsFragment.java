@@ -193,7 +193,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
     public void onFetchCloudAppsListDone(List<CloudAppDetails> newList) {
 
         if (newList == null) {
-            ShowToast("Error syncing appslist");
+            ShowToast("Error syncing appslist. Please check network connection.");
             swipeRefreshLayout.setRefreshing(false);
             return;
         }
