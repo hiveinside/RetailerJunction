@@ -157,9 +157,17 @@ public class httpServer extends NanoHTTPD {
                 res = newFixedLengthResponse(Response.Status.OK, "application/octet-stream", inputStream, (int) inputStream.available());
                 res.addHeader("Accept-Ranges", "bytes");
                 res.addHeader("Content-Length", "" + inputStream.available());
-                res.addHeader( "Content-Disposition", "attachment; filename=\"" + "shareapp.apk" + "\"");
+                res.addHeader("Content-Disposition", "attachment; filename=\"" + "shareapp.apk" + "\"");
                 // res.addHeader("ETag", etag); //// TODO: 4/19/2016 figure how to set ETAG.. and is it really needed?
 
+            } catch (FileNotFoundException e) {
+                return newFixedLengthResponse(
+                        "<html>" +
+                        "<center><h1><br>Share app not found. <br>Promoter must sync to server to get it<br><br><br></h1>" +
+                        "<form><input Type=\"button\" style=\"width:200;height:50;font-size:24;background-color:lightgreen\"" +
+                                "value=\"Back\" onClick=\"history.go(-1);return true;\">" +
+                                "</form></center>" +
+                        "</html>");
             } catch (IOException e) {
                 e.printStackTrace();
             }
