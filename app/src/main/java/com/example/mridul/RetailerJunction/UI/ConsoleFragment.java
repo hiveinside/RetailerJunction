@@ -169,7 +169,7 @@ public class ConsoleFragment extends Fragment {
         List<IncomeReportObject> incomeDataList = gson.fromJson(incomeData, listType);
 
 
-        for (int i=0; i<incomeDataList.size(); i++) {
+        for (int i=0; incomeDataList!=null && i<incomeDataList.size(); i++) {
 
             IncomeReportObject record = incomeDataList.get(i);
 
