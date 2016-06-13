@@ -12,7 +12,6 @@ public class Constants {
     public static final String APPSLIST_API_URL = "http://retail.xapi.co.in/api/v1/apps";
     public static final String APPSLIST_LOGIN_URL = "http://retail.xapi.co.in/api/authenticate";
     public static final String UPLOADDATA_API_URL = "http://retail.xapi.co.in/api/events?token=";
-    public static final String AUTH_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImlzcyI6Imh0dHA6XC9cL3JldGFpbC54YXBpLmNvLmluXC9hcGlcL2F1dGhlbnRpY2F0ZSIsImlhdCI6MTQ2MzU3NDMxNSwiZXhwIjoxNDY3MTc0MzE1LCJuYmYiOjE0NjM1NzQzMTUsImp0aSI6ImQ4MjUxMDQ5Y2EyMGUxZTcwYzRjZTA0Y2QyODhiOWM3In0.bQBbDpT-Mmc1ALqntiSy9njEPBkfWwjv6lhlCW17Yuk";
 
     /*
      * URL&startdate=2016-05-01&enddate=2016-05-01&token=eyJ0eXAiOiJKV1QiLCJh

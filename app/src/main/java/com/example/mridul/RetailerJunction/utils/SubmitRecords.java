@@ -8,6 +8,7 @@ import com.example.mridul.RetailerJunction.daogenerator.model.DaoMaster;
 import com.example.mridul.RetailerJunction.daogenerator.model.DaoSession;
 import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecords;
 import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecordsDao;
+import com.example.mridul.RetailerJunction.helpers.PreferencesHelper;
 import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 
 import org.apache.http.HttpResponse;
@@ -52,7 +53,13 @@ public class SubmitRecords extends AsyncTask<Void, Void, Boolean> {
             if (installRecordsList.get(i).getIsUploaded() == 0) {
 
                 try {
-                    String URL = Constants.UPLOADDATA_API_URL + Constants.AUTH_TOKEN;
+                    String auth_token = PreferencesHelper.getInstance(RetailerApplication.getRJContext()).getToken();
+
+                    if (auth_token == null){
+                        return null;
+                    }
+
+                    String URL = Constants.UPLOADDATA_API_URL + auth_token;
                     HttpPost httpPost = new HttpPost(URL);
                     HttpClient client = new DefaultHttpClient();
 

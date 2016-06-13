@@ -50,10 +50,16 @@ public class GetIncomeReport extends AsyncTask<Void, Void, List<IncomeReportObje
             Calendar fromDate = Calendar.getInstance();
             fromDate.add(Calendar.DATE, -10);
 
+            String auth_token = PreferencesHelper.getInstance(mContext).getToken();
+
+            if (auth_token == null){
+                return null;
+            }
+
             String incomeAPILink = Constants.INCOME_REPORT_API_URL + "&" +
                                 "startdate=" + new SimpleDateFormat("yyyy-MM-dd").format(fromDate.getTime()) + "&" +
                                 "enddate=" + new SimpleDateFormat("yyyy-MM-dd").format(todate.getTime()) + "&" +
-                                "token=" + Constants.AUTH_TOKEN;
+                                "token=" + auth_token;
             URL incomeApiURL = new URL (incomeAPILink);
             String responseText="";
 

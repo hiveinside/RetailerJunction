@@ -122,8 +122,9 @@ public class HotspotFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (LoginUtils.isLoggedIn(getActivity()) == true) {
-                    PreferencesHelper.getInstance(getActivity()).saveToken("");
-                    PreferencesHelper.getInstance(getActivity()).saveLoginState(false);
+                    PreferencesHelper.getInstance(getActivity()).saveToken(""); // reset auth token
+                    PreferencesHelper.getInstance(getActivity()).saveLoginState(false); // reset login state
+                    PreferencesHelper.getInstance(getActivity()).saveWeekIncome(""); // reset income report
 
                     ShowToast("Logout Successful");
 
@@ -203,6 +204,10 @@ public class HotspotFragment extends Fragment {
                     break;
                 case 11: //WifiManager.WIFI_STATE_DISABLED:
                     button.setTag(TURN_OFF_HOTSPOT);
+
+                    if (wasWiFiEnabled == true) {
+                        mWifiManager.setWifiEnabled(true);
+                    }
                     break;
                 case 12: //WifiManager.WIFI_STATE_ENABLING:
                     button.setTag(TURNING_ON_HOTSPOT);
@@ -244,6 +249,10 @@ public class HotspotFragment extends Fragment {
 
         if (apMgr!= null)
             apMgr.disable(); // Stop webserver
+
+        if (wasWiFiEnabled == true) {
+            mWifiManager.setWifiEnabled(true);
+        }
     }
 
 }
