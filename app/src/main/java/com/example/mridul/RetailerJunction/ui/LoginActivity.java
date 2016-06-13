@@ -16,6 +16,7 @@ import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecords;
 import com.example.mridul.RetailerJunction.helpers.PreferencesHelper;
 import com.example.mridul.RetailerJunction.utils.CloudAppInfoObject;
 import com.example.mridul.RetailerJunction.utils.Constants;
+import com.example.mridul.RetailerJunction.utils.DoubleSimUtil;
 import com.example.mridul.helloworld.R;
 import com.google.gson.Gson;
 import com.google.gson.internal.Streams;
@@ -36,6 +37,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +51,15 @@ public class LoginActivity extends Activity {
 
     void ShowToast (String text) {
         Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
+    }
+
+    void ShowToastFromThread (final String mytext) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(mContext, mytext, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -89,14 +100,10 @@ public class LoginActivity extends Activity {
 
         protected void onPostExecute(String token) {
             if (token == null) {
-                ShowToast("Incorrect username or password");
                 return;
             }
-            PreferencesHelper.getInstance(mContext).saveToken(token);
-            PreferencesHelper.getInstance(mContext).saveLoginState(true);
 
             ShowToast("Login Successful");
-
 
             startActivity(new Intent(mContext, RetailerJunctionActivity.class));
 
@@ -122,7 +129,7 @@ public class LoginActivity extends Activity {
 
                 HttpResponse response = client.execute(httpPost);
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    Log.e("Login Failed: ", response.toString());
+                    ShowToastFromThread("Incorrect username or password");
                     return null;
                 }
 
@@ -132,7 +139,16 @@ public class LoginActivity extends Activity {
                 JSONObject json = new JSONObject(responseText);
                 token = (String) json.get("token");
 
+                PreferencesHelper.getInstance(mContext).saveLoginState(true);
+                PreferencesHelper.getInstance(mContext).saveToken(token);
+                PreferencesHelper.getInstance(mContext).saveLoginID((String)data[0].get("username"));
+
+            } catch(UnknownHostException ex) {
+                ShowToastFromThread("No internet connection");
+                return null;
+
             } catch(Exception ex) {
+                ShowToastFromThread("Unable to login");
                 Log.e("Fetch appslist Failed", ex.getMessage());
                 return null;
             }

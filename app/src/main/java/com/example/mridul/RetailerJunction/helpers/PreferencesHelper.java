@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 public class PreferencesHelper {
     private static final String PHONE_HELPER = "Phone_Helper";
     private static final String LOGIN_STATE = "Login_State";
+    private static final String LOGIN_ID = "Login_Id";
     private static final String UPDATE_CHECK = "Update_Check";
     private static final String TOKEN = "token";
     private static final String WEEK_INCOME = "Week_Income";
@@ -48,6 +49,16 @@ public class PreferencesHelper {
     public void saveLoginState(boolean state) {
         SharedPreferences.Editor editor = context.getSharedPreferences(PHONE_HELPER, 0).edit();
         editor.putBoolean(LOGIN_STATE, state);
+        editor.commit();
+    }
+
+    public String getLoginID() {
+        return context.getSharedPreferences(PHONE_HELPER, 0).getString(LOGIN_ID, null);
+    }
+
+    public void saveLoginID(String loginID) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PHONE_HELPER, 0).edit();
+        editor.putString(LOGIN_ID, loginID);
         editor.commit();
     }
 

@@ -14,9 +14,11 @@ import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecords;
 import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecordsDao;
 import com.example.mridul.RetailerJunction.db.PromoterInfoObject;
 import com.example.mridul.RetailerJunction.db.SubmitDataObject;
+import com.example.mridul.RetailerJunction.helpers.PreferencesHelper;
 import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.RetailerJunction.utils.Constants;
+import com.example.mridul.RetailerJunction.utils.DoubleSimUtil;
 import com.example.mridul.helloworld.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -215,13 +217,9 @@ public class httpServer extends NanoHTTPD {
     }
 
     private void getPromoterInfo(PromoterInfoObject promoterInfo) {
-        // // TODO: 5/17/2016 get this once login functionality is done
-        promoterInfo.promoterId = new String("9243090116");
+        promoterInfo.promoterId = PreferencesHelper.getInstance(context).getLoginID();
 
-        TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-
-        // TODO: 5/17/2016 get both/all IMEIs
-        promoterInfo.imei = telephonyManager.getDeviceId();
+        promoterInfo.imei = DoubleSimUtil.getImei(RetailerApplication.getRJContext());
         promoterInfo.android_id = Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         promoterInfo.model = Build.BRAND + "," + Build.PRODUCT + "," + Build.MODEL;
 
