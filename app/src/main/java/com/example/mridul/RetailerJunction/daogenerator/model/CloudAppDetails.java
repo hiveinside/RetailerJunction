@@ -14,6 +14,7 @@ public class CloudAppDetails {
     private String packagename;
     private String checksum;
     private Integer state;
+    private Integer minsdk;
     private Long listts;
     private Boolean downloaded;
     private Long apkts;
@@ -25,7 +26,7 @@ public class CloudAppDetails {
         this.campaignId = campaignId;
     }
 
-    public CloudAppDetails(Long campaignId, String name, String version, Integer size, String downloadurl, String packagename, String checksum, Integer state, Long listts, Boolean downloaded, Long apkts) {
+    public CloudAppDetails(Long campaignId, String name, String version, Integer size, String downloadurl, String packagename, String checksum, Integer state, Integer minsdk, Long listts, Boolean downloaded, Long apkts) {
         this.campaignId = campaignId;
         this.name = name;
         this.version = version;
@@ -34,6 +35,7 @@ public class CloudAppDetails {
         this.packagename = packagename;
         this.checksum = checksum;
         this.state = state;
+        this.minsdk = minsdk;
         this.listts = listts;
         this.downloaded = downloaded;
         this.apkts = apkts;
@@ -101,6 +103,14 @@ public class CloudAppDetails {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public Integer getMinsdk() {
+        return minsdk;
+    }
+
+    public void setMinsdk(Integer minsdk) {
+        this.minsdk = minsdk;
     }
 
     public Long getListts() {

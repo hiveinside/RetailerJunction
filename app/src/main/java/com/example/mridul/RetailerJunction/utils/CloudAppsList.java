@@ -249,6 +249,7 @@ public class CloudAppsList {
             dbItem.setPackagename(cloudAppsList.get(i).packagename);
             dbItem.setChecksum(cloudAppsList.get(i).checksum);
             dbItem.setState(cloudAppsList.get(i).state);
+            dbItem.setMinsdk(cloudAppsList.get(i).minsdk);
 
             dbItem.setListts(System.currentTimeMillis());
 

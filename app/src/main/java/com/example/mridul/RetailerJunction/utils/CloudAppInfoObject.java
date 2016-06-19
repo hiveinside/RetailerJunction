@@ -34,6 +34,7 @@ public class CloudAppInfoObject {
     public String packagename;
     public String checksum;
     public int state;
+    public int minsdk;
     public String created_at;
     public String updated_at;
     public String deleted_at;

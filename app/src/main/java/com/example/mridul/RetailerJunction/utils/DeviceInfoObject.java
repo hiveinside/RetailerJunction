@@ -35,14 +35,16 @@ public class DeviceInfoObject {
     public int android_api; // API level
     public int network_status; //2g/3g/4g/wifi
     public boolean rooted; // rooted status
-    public long internal_avail; //available internal mem
-    public long internal_total; //Total internal mem
-    public long external_avail; //available internal mem
-    public long external_total; //Total external mem
-    public long ram_total; //RAM size
+    public long int_avail; //available internal mem
+    public long int_total; //Total internal mem
+    public long ext_avail; //available internal mem
+    public long ext_total; //Total external mem
     public long ram_avail; //RAM size
+    public long ram_total; //RAM size
     public int kit_version_code;// kit app version
     public String kit_version_name;// kit app version
+    public float glat;// lat
+    public float glong;// long
 
     // figure this out
     /*

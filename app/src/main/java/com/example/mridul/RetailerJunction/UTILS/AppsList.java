@@ -103,6 +103,7 @@ public class AppsList extends Application {
         appI.version = cloudAppInfo.getVersion();
         appI.checksum = cloudAppInfo.getChecksum();
         appI.size = cloudAppInfo.getSize(); //bytes
+        appI.minsdk = cloudAppInfo.getMinsdk(); //min sdk version
 
         appI.downloadDone = false; //used by client
         appI.installDone = 0; //used by client
