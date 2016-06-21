@@ -39,3 +39,18 @@ public class CloudAppInfoObject {
     public String updated_at;
     public String deleted_at;
 }
+
+/*
+{
+    "data":
+    {
+        "ismandatory":true,
+        "url":"https:\/\/",
+        "releasenotes":"fixed critical bugs",
+        "size":1200423,"checksum":"47832579*&*$#(243rh",
+        "versioncode":12,"versionstring":"1.2.1",
+        "deleted_at":null,
+        "created_at":null,
+        "updated_at":null
+    }
+}*/

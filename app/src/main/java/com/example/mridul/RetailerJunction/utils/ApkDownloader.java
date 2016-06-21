@@ -21,17 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Mridul on 4/17/2016.
+ * Created by pankaj on 19/6/16.
  */
-public class AppDownloader {
+public class ApkDownloader {
 
     private static final String TAG = "AppDownloader";
-    //private static final String DESTINATION = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/update.apk";
     private static String APK_DIR = "final_dir";
-    AppDownloadCallback downloadCallback;
+    ApkDownloadCallback downloadCallback;
     List<CloudAppDetails> downloadList;
 
-    public AppDownloader(AppDownloadCallback downloadCallback) {
+    public ApkDownloader(ApkDownloadCallback downloadCallback) {
         this.downloadCallback = downloadCallback;
     }
 
@@ -39,16 +38,6 @@ public class AppDownloader {
 
         APK_DIR = ROOT_DIR + "/apks/";
         this.downloadList = dList;
-
-        /*
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        DaoMaster daoMaster = new DaoMaster(db);
-        DaoSession daoSession = daoMaster.newSession();
-        CloudAppDetailsDao appEntryDao = daoSession.getCloudAppDetailsDao();
-
-        List<CloudAppDetails> cd = appEntryDao.loadAll();
-        */
 
         final FileDownloadQueueSet queueSet = new FileDownloadQueueSet(mFileDownloadListener);
 
@@ -60,8 +49,6 @@ public class AppDownloader {
 
             tasks.add(FileDownloader.getImpl().create(link).setPath(destFile).setListener(mFileDownloadListener).setTag(downloadList.get(i)));
         }
-        //queueSet.disableCallbackProgressTimes(); // do not want each task's download progress's callback,
-        // we just consider which task will completed.
 
         // auto retry 1 time if download fail
         queueSet.setAutoRetryTimes(1);
@@ -104,12 +91,6 @@ public class AppDownloader {
             File to = new File(FilenameUtils.removeExtension(currentName) + ".apk");
 
             from.renameTo(to);
-            //FileUtils.copyFile(from, to);
-
-            if (((CloudAppDetails) task.getTag()).getIsSelfUpdate()) {
-                downloadCallback.onApkDownloadCompleted(task);
-                return;
-            }
 
             // update database - mark downloaded, apkts
             // write to database
@@ -158,11 +139,11 @@ public class AppDownloader {
         }
     };
 
-    public interface AppDownloadCallback {
-        public void onApkDownloadCompleted(BaseDownloadTask task);
+    public interface ApkDownloadCallback {
+        void onApkDownloadCompleted(BaseDownloadTask task);
 
-        public void onApkDownloadError(BaseDownloadTask task);
+        void onApkDownloadError(BaseDownloadTask task);
 
-        public void onApkDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes);
+        void onApkDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes);
     }
 }

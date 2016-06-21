@@ -71,4 +71,14 @@ public class PreferencesHelper {
         editor.putString(WEEK_INCOME, json);
         editor.commit();
     }
+
+    public String getSelfUpdateInfo() {
+        return context.getSharedPreferences(PHONE_HELPER, 0).getString(UPDATE_CHECK, null);
+    }
+
+    public void saveSelfUpdateInfo(String json) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PHONE_HELPER, 0).edit();
+        editor.putString(UPDATE_CHECK, json);
+        editor.commit();
+    }
 }

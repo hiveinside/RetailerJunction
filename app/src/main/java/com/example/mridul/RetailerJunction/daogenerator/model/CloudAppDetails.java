@@ -18,6 +18,7 @@ public class CloudAppDetails {
     private Long listts;
     private Boolean downloaded;
     private Long apkts;
+    private boolean is_self_update = false;
 
     public CloudAppDetails() {
     }
@@ -135,6 +136,14 @@ public class CloudAppDetails {
 
     public void setApkts(Long apkts) {
         this.apkts = apkts;
+    }
+
+    public boolean getIsSelfUpdate() {
+        return is_self_update;
+    }
+
+    public void setIsSelfUpdate(boolean is_self_update) {
+        this.is_self_update = is_self_update;
     }
 
 }
