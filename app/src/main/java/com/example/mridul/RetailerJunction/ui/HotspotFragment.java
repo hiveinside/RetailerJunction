@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mridul.RetailerJunction.helpers.PreferencesHelper;
-import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
 import com.example.mridul.RetailerJunction.utils.Constants;
 import com.example.mridul.RetailerJunction.http.httpServer;
@@ -25,7 +24,6 @@ import com.example.mridul.RetailerJunction.wifi.WifiApControl;
 import com.example.mridul.helloworld.R;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by satish on 4/12/16.
@@ -38,7 +36,7 @@ public class HotspotFragment extends Fragment {
     private static final int TURNING_OFF_HOTSPOT = 3;
     private static final int HOTSPOT_ERROR = 4;
 
-    httpServer h;
+    httpServer webserver;
     static WifiManager mWifiManager;
     static WifiConfiguration wifiConfiguration;
     WifiApControl apMgr;
@@ -168,12 +166,12 @@ public class HotspotFragment extends Fragment {
                         wifiConfiguration = apMgr.getWifiApConfiguration();
                         // Start webserver
                         try {
-                            h = new httpServer(context);
-                            h.start();
+                            webserver = new httpServer(context);
+                            webserver.start();
                         } catch (IOException ioe) {
                             button.setTag(TURN_OFF_HOTSPOT);
                             ShowToast("HTTP server failed. Retry");
-                            h.stop();
+                            webserver.stop();
                         }
                     } else {
                         button.setTag(TURN_OFF_HOTSPOT);
@@ -182,12 +180,12 @@ public class HotspotFragment extends Fragment {
                     }
 
                 } else if (button.getTag() == TURN_ON_HOTSPOT) {
-                    h.stop(); // Stop hotspot
+                    webserver.stop(); // Stop hotspot
                     apMgr.disable(); // Stop webserver
                     wifiConfiguration = null;
                 }
 
-                updateUI();
+                //updateUI();
             }
         });
     }
@@ -228,8 +226,8 @@ public class HotspotFragment extends Fragment {
         super.onDetach();
 
         //stop everything
-        if (h != null)
-            h.stop(); // Stop hotspot
+        if (webserver != null)
+            webserver.stop(); // Stop hotspot
 
         if (apMgr!= null)
             apMgr.disable(); // Stop webserver
@@ -244,8 +242,8 @@ public class HotspotFragment extends Fragment {
         super.onDestroy();
 
         //stop everything
-        if (h != null)
-            h.stop(); // Stop hotspot
+        if (webserver != null)
+            webserver.stop(); // Stop hotspot
 
         if (apMgr!= null)
             apMgr.disable(); // Stop webserver
