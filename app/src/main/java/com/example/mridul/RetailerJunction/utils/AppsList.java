@@ -107,6 +107,7 @@ public class AppsList extends Application {
 
         appI.downloadDone = false; //used by client
         appI.installDone = 0; //used by client
+        appI.installts = 0; //used by client
 
         return appI;
     }

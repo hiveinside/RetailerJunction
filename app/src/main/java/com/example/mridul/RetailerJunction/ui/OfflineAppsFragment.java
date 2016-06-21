@@ -307,7 +307,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
                 break;
 
             case NOTHINGTODOWNLOAD:
-                ShowToast("Sync completed");
+                ShowToast("List already upto date");
 
                 lastSyncTime = System.currentTimeMillis();
                 swipeRefreshLayout.setRefreshing(false);

@@ -5,13 +5,13 @@ import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.example.mridul.RetailerJunction.daogenerator.model.DaoMaster;
 import com.example.mridul.RetailerJunction.daogenerator.model.DaoSession;
 import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecords;
 import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecordsDao;
+import com.example.mridul.RetailerJunction.db.AppsListToClientObject;
 import com.example.mridul.RetailerJunction.db.PromoterInfoObject;
 import com.example.mridul.RetailerJunction.db.SubmitDataObject;
 import com.example.mridul.RetailerJunction.helpers.PreferencesHelper;
@@ -21,6 +21,7 @@ import com.example.mridul.RetailerJunction.utils.Constants;
 import com.example.mridul.RetailerJunction.utils.DoubleSimUtil;
 import com.example.mridul.helloworld.BuildConfig;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -40,7 +41,6 @@ import fi.iki.elonen.NanoHTTPD;
 public class httpServer extends NanoHTTPD {
 
     Context context;
-    public AppsList appsList;
 
     public httpServer(Context c) throws IOException
     {
@@ -65,10 +65,14 @@ public class httpServer extends NanoHTTPD {
 
         if ( Method.GET.equals(method) && parms.get("getAppsList") != null) {
 
-            appsList = new AppsList(context);
+            AppsListToClientObject appsListForClientObject = new AppsListToClientObject();
+            appsListForClientObject.appsList = AppsList.getAppsList();
+            appsListForClientObject.promoterId = PreferencesHelper.getInstance(context).getLoginID();
+            appsListForClientObject.timestamp = System.currentTimeMillis();
 
-            return newFixedLengthResponse(appsList.getAppsListJson());
-            //return new Response(Response.Status.OK, MIME_HTML, appsList.getAppsListJson());
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            return newFixedLengthResponse(gson.toJson(appsListForClientObject));
 
         } else if (Method.GET.equals(method) && parms.get("getIcon") != null) {
             String uri = session.getUri();
