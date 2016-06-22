@@ -235,7 +235,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         // download if there is anything to download.
         if (downloadList.size() > 0) {
             AppDownloader ad = new AppDownloader(this);
-            ad.download(getActivity().getApplicationContext().getFilesDir().getAbsolutePath(), downloadList);
+            ad.download(RetailerApplication.getApkDir(), downloadList);
         } else {
             UpdateUI(null, NOTHINGTODOWNLOAD);
         }
@@ -261,7 +261,6 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
     public void onApkDownloadCompleted(BaseDownloadTask task) {
 
         // Refresh appsList datastructure -  this will reparse the apks
-        // // TODO: 5/7/2016 just update what is needed - add, update, delete
         AppsList a = new AppsList(getActivity());
         String filename = ((CloudAppDetails) task.getTag()).getPackagename() + ".apk";
         //a.addToList(campaignId, filename);

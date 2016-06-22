@@ -35,9 +35,8 @@ public class AppDownloader {
         fragment = offlineAppsFragment;
     }
 
-    public void download(String ROOT_DIR, List<CloudAppDetails> dList) {
+    public void download(String APK_DIR, List<CloudAppDetails> dList) {
 
-        APK_DIR = ROOT_DIR + "/apks/";
         this.downloadList = dList;
 
         /*
