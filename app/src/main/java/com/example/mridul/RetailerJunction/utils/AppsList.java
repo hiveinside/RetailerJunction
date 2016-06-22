@@ -95,10 +95,10 @@ public class AppsList extends Application {
 
         Drawable d = pi.applicationInfo.loadIcon(pm);
         appI.campaignId = campaign_id;
-        appI.appName = (String)pi.applicationInfo.loadLabel(pm);
-        appI.packageName = (String)pi.applicationInfo.packageName;
+        appI.appName = cloudAppInfo.getName();
+        appI.packageName = cloudAppInfo.getPackagename();
 
-        appI.iconUrl = storeDrawable(d, (String)pi.applicationInfo.packageName);
+        appI.iconUrl = storeDrawable(d, cloudAppInfo.getPackagename());
         appI.apkUrl = Constants.DEFAULT_IP_ADDRESS + ":" + Constants.HTTP_PORT + "/" + filename + "?getApk";
         appI.version = cloudAppInfo.getVersion();
         appI.checksum = cloudAppInfo.getChecksum();

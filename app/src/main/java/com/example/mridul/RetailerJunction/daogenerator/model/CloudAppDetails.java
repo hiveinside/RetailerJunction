@@ -18,6 +18,10 @@ public class CloudAppDetails {
     private Long listts;
     private Boolean downloaded;
     private Long apkts;
+    private String iconurl;
+    private String category;
+    private String desc;
+    private Float rating;
 
     public CloudAppDetails() {
     }
@@ -26,7 +30,7 @@ public class CloudAppDetails {
         this.campaignId = campaignId;
     }
 
-    public CloudAppDetails(Long campaignId, String name, String version, Integer size, String downloadurl, String packagename, String checksum, Integer state, Integer minsdk, Long listts, Boolean downloaded, Long apkts) {
+    public CloudAppDetails(Long campaignId, String name, String version, Integer size, String downloadurl, String packagename, String checksum, Integer state, Integer minsdk, Long listts, Boolean downloaded, Long apkts, String iconurl, String category, String desc, Float rating) {
         this.campaignId = campaignId;
         this.name = name;
         this.version = version;
@@ -39,6 +43,10 @@ public class CloudAppDetails {
         this.listts = listts;
         this.downloaded = downloaded;
         this.apkts = apkts;
+        this.iconurl = iconurl;
+        this.category = category;
+        this.desc = desc;
+        this.rating = rating;
     }
 
     public Long getCampaignId() {
@@ -135,6 +143,38 @@ public class CloudAppDetails {
 
     public void setApkts(Long apkts) {
         this.apkts = apkts;
+    }
+
+    public String getIconurl() {
+        return iconurl;
+    }
+
+    public void setIconurl(String iconurl) {
+        this.iconurl = iconurl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public Float getRating() {
+        return rating;
+    }
+
+    public void setRating(Float rating) {
+        this.rating = rating;
     }
 
 }

@@ -35,6 +35,10 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
         public final static Property Listts = new Property(9, Long.class, "listts", false, "LISTTS");
         public final static Property Downloaded = new Property(10, Boolean.class, "downloaded", false, "DOWNLOADED");
         public final static Property Apkts = new Property(11, Long.class, "apkts", false, "APKTS");
+        public final static Property Iconurl = new Property(12, String.class, "iconurl", false, "ICONURL");
+        public final static Property Category = new Property(13, String.class, "category", false, "CATEGORY");
+        public final static Property Desc = new Property(14, String.class, "desc", false, "DESC");
+        public final static Property Rating = new Property(15, Float.class, "rating", false, "RATING");
     };
 
 
@@ -61,7 +65,11 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
                 "\"MINSDK\" INTEGER," + // 8: minsdk
                 "\"LISTTS\" INTEGER," + // 9: listts
                 "\"DOWNLOADED\" INTEGER," + // 10: downloaded
-                "\"APKTS\" INTEGER);"); // 11: apkts
+                "\"APKTS\" INTEGER," + // 11: apkts
+                "\"ICONURL\" TEXT," + // 12: iconurl
+                "\"CATEGORY\" TEXT," + // 13: category
+                "\"DESC\" TEXT," + // 14: desc
+                "\"RATING\" REAL);"); // 15: rating
     }
 
     /** Drops the underlying database table. */
@@ -134,6 +142,26 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
         if (apkts != null) {
             stmt.bindLong(12, apkts);
         }
+ 
+        String iconurl = entity.getIconurl();
+        if (iconurl != null) {
+            stmt.bindString(13, iconurl);
+        }
+ 
+        String category = entity.getCategory();
+        if (category != null) {
+            stmt.bindString(14, category);
+        }
+ 
+        String desc = entity.getDesc();
+        if (desc != null) {
+            stmt.bindString(15, desc);
+        }
+ 
+        Float rating = entity.getRating();
+        if (rating != null) {
+            stmt.bindDouble(16, rating);
+        }
     }
 
     /** @inheritdoc */
@@ -157,7 +185,11 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // minsdk
             cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // listts
             cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0, // downloaded
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11) // apkts
+            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // apkts
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // iconurl
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // category
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // desc
+            cursor.isNull(offset + 15) ? null : cursor.getFloat(offset + 15) // rating
         );
         return entity;
     }
@@ -177,6 +209,10 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
         entity.setListts(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
         entity.setDownloaded(cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0);
         entity.setApkts(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setIconurl(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setCategory(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setDesc(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setRating(cursor.isNull(offset + 15) ? null : cursor.getFloat(offset + 15));
      }
     
     /** @inheritdoc */

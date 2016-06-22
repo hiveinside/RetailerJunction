@@ -22,6 +22,10 @@ public class AppInfoObject {
     public String checksum;
     public int size; //bytes
     public int minsdk;
+    public String category;
+    public String desc;
+    public float rating;
+
 
     /* Fields for client */
     public boolean downloadDone; //used by client

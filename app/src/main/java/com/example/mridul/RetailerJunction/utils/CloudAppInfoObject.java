@@ -9,22 +9,25 @@ package com.example.mridul.RetailerJunction.utils;
   "success": true,
   "data": [
     {
-      "campaign_id": 1,
+      "id": 1,
       "name": "Redbus",
-      "version": null,
-      "size": "1mb",
+      "version": "4.3.887.8",
+      "size": "1000",
       "downloadurl": "https://s3-ap-southeast-1.amazonaws.com/lavaretailapp/apps/redBus_3.50.01.apk",
       "packagename": "com.redbus",
-      "checksum": "12345",
+      "checksum": "Wjm3XZgM7L",
       "state": null,
-      "created_at": "2016-04-26 10:56:25",
-      "updated_at": "2016-04-26 10:56:25",
-      "deleted_at": null
+      "campaign_id": 1,
+      "minsdk": 19,
+      "iconurl": "https://s3-ap-southeast-1.amazonaws.com/lavaretailapp/icons/in.redbus.android.PNG",
+      "category": "Travel & Local",
+      "desc": "Bus ticket booking made easy",
+      "rating": 4
     }
   ],
   "message": "Apps retrieved successfully"
 }
- */
+*/
 public class CloudAppInfoObject {
     public long campaign_id;
     public String name;
@@ -35,7 +38,8 @@ public class CloudAppInfoObject {
     public String checksum;
     public int state;
     public int minsdk;
-    public String created_at;
-    public String updated_at;
-    public String deleted_at;
+    public String iconurl;
+    public String category;
+    public String desc;
+    public float rating;
 }
