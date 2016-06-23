@@ -254,7 +254,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         // do this if downloads are active. Otherwise it will show error unnecessarily
         FileDownloader.getImpl().pauseAll();
 
-        UpdateUI(null, ERROR);
+        //UpdateUI(null, ERROR);
     }
 
     @Override
