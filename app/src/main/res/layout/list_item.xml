@@ -16,18 +16,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/appTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:textSize="16dp"
             android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/appDetail"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="10dp"
             android:textColor="@color/black"/>
