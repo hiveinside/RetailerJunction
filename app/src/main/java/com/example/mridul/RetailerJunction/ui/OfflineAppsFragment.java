@@ -17,6 +17,7 @@ import com.example.mridul.RetailerJunction.daogenerator.model.CloudAppDetails;
 import com.example.mridul.RetailerJunction.daogenerator.model.CloudAppDetailsDao;
 import com.example.mridul.RetailerJunction.daogenerator.model.DaoMaster;
 import com.example.mridul.RetailerJunction.daogenerator.model.DaoSession;
+import com.example.mridul.RetailerJunction.helpers.PreferencesHelper;
 import com.example.mridul.RetailerJunction.utils.AppDownloader;
 import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.RetailerJunction.utils.AppsList;
@@ -83,9 +84,8 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
 
         // read database - load last cloudAppDetail from DB
         loadAppsListFromDB();
-        if (dbCloudAppsList.size() > 0) {
-            lastSyncTime = dbCloudAppsList.get(0).getListts();
-        }
+
+        lastSyncTime = PreferencesHelper.getInstance(getActivity()).getLastSync();
 
         return rootView;
     }
@@ -141,7 +141,6 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
             // popualate existing list.
             listView.setAdapter(new OfflineListAdapter(getActivity().getApplicationContext(), R.layout.list_item, getExistingApps()));
             
-            // // TODO: 5/10/2016 figure this. Offline listing needs last available 
             UpdateUI(null, OFFLINE);
 
             // the refresh listner. this would be called when the layout is pulled down
@@ -323,6 +322,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
                 ShowToast("List already upto date");
 
                 lastSyncTime = System.currentTimeMillis();
+                PreferencesHelper.getInstance(getActivity()).saveLastSync(lastSyncTime);
                 swipeRefreshLayout.setRefreshing(false);
                 textLeft.setText("Updated: " + DateFormat.getDateTimeInstance().format(lastSyncTime));
                 break;
@@ -334,6 +334,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
 
                     swipeRefreshLayout.setRefreshing(false);
                     lastSyncTime = System.currentTimeMillis();
+                    PreferencesHelper.getInstance(getActivity()).saveLastSync(lastSyncTime);
                     textLeft.setText("Updated: " + DateFormat.getDateTimeInstance().format(lastSyncTime));
                 } else{
                     textLeft.setText("");

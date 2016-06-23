@@ -13,6 +13,7 @@ public class PreferencesHelper {
     private static final String UPDATE_CHECK = "Update_Check";
     private static final String TOKEN = "token";
     private static final String WEEK_INCOME = "Week_Income";
+    private static final String LAST_SYNC = "Last_Sync";
 
     private static Context context = null;
     private static PreferencesHelper pHelper = null;
@@ -69,6 +70,16 @@ public class PreferencesHelper {
     public void saveWeekIncome(String json) {
         SharedPreferences.Editor editor = context.getSharedPreferences(PHONE_HELPER, 0).edit();
         editor.putString(WEEK_INCOME, json);
+        editor.commit();
+    }
+
+    public long getLastSync() {
+        return context.getSharedPreferences(PHONE_HELPER, 0).getLong(LAST_SYNC, 0);
+    }
+
+    public void saveLastSync(long time) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PHONE_HELPER, 0).edit();
+        editor.putLong(LAST_SYNC, time);
         editor.commit();
     }
 }
