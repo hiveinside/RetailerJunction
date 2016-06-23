@@ -199,7 +199,8 @@ public class CloudAppsList {
 
                 } else {
                     // MD5 different - make downloaded flag & ts false
-                    dbItem.setDownloaded(false);
+                    dbItem.setApkDownloaded(false);
+                    dbItem.setIconDownloaded(false);
                     dbItem.setApkts(0L);
 
                     // remove file from apk folder
@@ -219,7 +220,8 @@ public class CloudAppsList {
                 dbItem = new CloudAppDetails();
 
                 dbItem.setCampaignId(cloudAppsList.get(i).campaign_id);
-                dbItem.setDownloaded(false);
+                dbItem.setApkDownloaded(false);
+                dbItem.setIconDownloaded(false);
                 dbItem.setApkts(0L);
             }
 

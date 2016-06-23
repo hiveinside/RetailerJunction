@@ -32,13 +32,14 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
         public final static Property Checksum = new Property(6, String.class, "checksum", false, "CHECKSUM");
         public final static Property State = new Property(7, Integer.class, "state", false, "STATE");
         public final static Property Minsdk = new Property(8, Integer.class, "minsdk", false, "MINSDK");
-        public final static Property Listts = new Property(9, Long.class, "listts", false, "LISTTS");
-        public final static Property Downloaded = new Property(10, Boolean.class, "downloaded", false, "DOWNLOADED");
-        public final static Property Apkts = new Property(11, Long.class, "apkts", false, "APKTS");
-        public final static Property Iconurl = new Property(12, String.class, "iconurl", false, "ICONURL");
-        public final static Property Category = new Property(13, String.class, "category", false, "CATEGORY");
-        public final static Property Desc = new Property(14, String.class, "desc", false, "DESC");
-        public final static Property Rating = new Property(15, Float.class, "rating", false, "RATING");
+        public final static Property Iconurl = new Property(9, String.class, "iconurl", false, "ICONURL");
+        public final static Property Category = new Property(10, String.class, "category", false, "CATEGORY");
+        public final static Property Desc = new Property(11, String.class, "desc", false, "DESC");
+        public final static Property Rating = new Property(12, Float.class, "rating", false, "RATING");
+        public final static Property Listts = new Property(13, Long.class, "listts", false, "LISTTS");
+        public final static Property IconDownloaded = new Property(14, Boolean.class, "iconDownloaded", false, "ICON_DOWNLOADED");
+        public final static Property ApkDownloaded = new Property(15, Boolean.class, "apkDownloaded", false, "APK_DOWNLOADED");
+        public final static Property Apkts = new Property(16, Long.class, "apkts", false, "APKTS");
     };
 
 
@@ -63,13 +64,14 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
                 "\"CHECKSUM\" TEXT," + // 6: checksum
                 "\"STATE\" INTEGER," + // 7: state
                 "\"MINSDK\" INTEGER," + // 8: minsdk
-                "\"LISTTS\" INTEGER," + // 9: listts
-                "\"DOWNLOADED\" INTEGER," + // 10: downloaded
-                "\"APKTS\" INTEGER," + // 11: apkts
-                "\"ICONURL\" TEXT," + // 12: iconurl
-                "\"CATEGORY\" TEXT," + // 13: category
-                "\"DESC\" TEXT," + // 14: desc
-                "\"RATING\" REAL);"); // 15: rating
+                "\"ICONURL\" TEXT," + // 9: iconurl
+                "\"CATEGORY\" TEXT," + // 10: category
+                "\"DESC\" TEXT," + // 11: desc
+                "\"RATING\" REAL," + // 12: rating
+                "\"LISTTS\" INTEGER," + // 13: listts
+                "\"ICON_DOWNLOADED\" INTEGER," + // 14: iconDownloaded
+                "\"APK_DOWNLOADED\" INTEGER," + // 15: apkDownloaded
+                "\"APKTS\" INTEGER);"); // 16: apkts
     }
 
     /** Drops the underlying database table. */
@@ -128,39 +130,44 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
             stmt.bindLong(9, minsdk);
         }
  
-        Long listts = entity.getListts();
-        if (listts != null) {
-            stmt.bindLong(10, listts);
-        }
- 
-        Boolean downloaded = entity.getDownloaded();
-        if (downloaded != null) {
-            stmt.bindLong(11, downloaded ? 1L: 0L);
-        }
- 
-        Long apkts = entity.getApkts();
-        if (apkts != null) {
-            stmt.bindLong(12, apkts);
-        }
- 
         String iconurl = entity.getIconurl();
         if (iconurl != null) {
-            stmt.bindString(13, iconurl);
+            stmt.bindString(10, iconurl);
         }
  
         String category = entity.getCategory();
         if (category != null) {
-            stmt.bindString(14, category);
+            stmt.bindString(11, category);
         }
  
         String desc = entity.getDesc();
         if (desc != null) {
-            stmt.bindString(15, desc);
+            stmt.bindString(12, desc);
         }
  
         Float rating = entity.getRating();
         if (rating != null) {
-            stmt.bindDouble(16, rating);
+            stmt.bindDouble(13, rating);
+        }
+ 
+        Long listts = entity.getListts();
+        if (listts != null) {
+            stmt.bindLong(14, listts);
+        }
+ 
+        Boolean iconDownloaded = entity.getIconDownloaded();
+        if (iconDownloaded != null) {
+            stmt.bindLong(15, iconDownloaded ? 1L: 0L);
+        }
+ 
+        Boolean apkDownloaded = entity.getApkDownloaded();
+        if (apkDownloaded != null) {
+            stmt.bindLong(16, apkDownloaded ? 1L: 0L);
+        }
+ 
+        Long apkts = entity.getApkts();
+        if (apkts != null) {
+            stmt.bindLong(17, apkts);
         }
     }
 
@@ -183,13 +190,14 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // checksum
             cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // state
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // minsdk
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // listts
-            cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0, // downloaded
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // apkts
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // iconurl
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // category
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // desc
-            cursor.isNull(offset + 15) ? null : cursor.getFloat(offset + 15) // rating
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // iconurl
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // category
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // desc
+            cursor.isNull(offset + 12) ? null : cursor.getFloat(offset + 12), // rating
+            cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13), // listts
+            cursor.isNull(offset + 14) ? null : cursor.getShort(offset + 14) != 0, // iconDownloaded
+            cursor.isNull(offset + 15) ? null : cursor.getShort(offset + 15) != 0, // apkDownloaded
+            cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16) // apkts
         );
         return entity;
     }
@@ -206,13 +214,14 @@ public class CloudAppDetailsDao extends AbstractDao<CloudAppDetails, Long> {
         entity.setChecksum(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setState(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setMinsdk(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setListts(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
-        entity.setDownloaded(cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0);
-        entity.setApkts(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
-        entity.setIconurl(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setCategory(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setDesc(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setRating(cursor.isNull(offset + 15) ? null : cursor.getFloat(offset + 15));
+        entity.setIconurl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setCategory(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setDesc(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setRating(cursor.isNull(offset + 12) ? null : cursor.getFloat(offset + 12));
+        entity.setListts(cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13));
+        entity.setIconDownloaded(cursor.isNull(offset + 14) ? null : cursor.getShort(offset + 14) != 0);
+        entity.setApkDownloaded(cursor.isNull(offset + 15) ? null : cursor.getShort(offset + 15) != 0);
+        entity.setApkts(cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16));
      }
     
     /** @inheritdoc */

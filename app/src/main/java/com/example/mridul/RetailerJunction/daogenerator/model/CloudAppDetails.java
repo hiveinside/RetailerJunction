@@ -15,13 +15,14 @@ public class CloudAppDetails {
     private String checksum;
     private Integer state;
     private Integer minsdk;
-    private Long listts;
-    private Boolean downloaded;
-    private Long apkts;
     private String iconurl;
     private String category;
     private String desc;
     private Float rating;
+    private Long listts;
+    private Boolean iconDownloaded;
+    private Boolean apkDownloaded;
+    private Long apkts;
 
     public CloudAppDetails() {
     }
@@ -30,7 +31,7 @@ public class CloudAppDetails {
         this.campaignId = campaignId;
     }
 
-    public CloudAppDetails(Long campaignId, String name, String version, Integer size, String downloadurl, String packagename, String checksum, Integer state, Integer minsdk, Long listts, Boolean downloaded, Long apkts, String iconurl, String category, String desc, Float rating) {
+    public CloudAppDetails(Long campaignId, String name, String version, Integer size, String downloadurl, String packagename, String checksum, Integer state, Integer minsdk, String iconurl, String category, String desc, Float rating, Long listts, Boolean iconDownloaded, Boolean apkDownloaded, Long apkts) {
         this.campaignId = campaignId;
         this.name = name;
         this.version = version;
@@ -40,13 +41,14 @@ public class CloudAppDetails {
         this.checksum = checksum;
         this.state = state;
         this.minsdk = minsdk;
-        this.listts = listts;
-        this.downloaded = downloaded;
-        this.apkts = apkts;
         this.iconurl = iconurl;
         this.category = category;
         this.desc = desc;
         this.rating = rating;
+        this.listts = listts;
+        this.iconDownloaded = iconDownloaded;
+        this.apkDownloaded = apkDownloaded;
+        this.apkts = apkts;
     }
 
     public Long getCampaignId() {
@@ -121,30 +123,6 @@ public class CloudAppDetails {
         this.minsdk = minsdk;
     }
 
-    public Long getListts() {
-        return listts;
-    }
-
-    public void setListts(Long listts) {
-        this.listts = listts;
-    }
-
-    public Boolean getDownloaded() {
-        return downloaded;
-    }
-
-    public void setDownloaded(Boolean downloaded) {
-        this.downloaded = downloaded;
-    }
-
-    public Long getApkts() {
-        return apkts;
-    }
-
-    public void setApkts(Long apkts) {
-        this.apkts = apkts;
-    }
-
     public String getIconurl() {
         return iconurl;
     }
@@ -175,6 +153,38 @@ public class CloudAppDetails {
 
     public void setRating(Float rating) {
         this.rating = rating;
+    }
+
+    public Long getListts() {
+        return listts;
+    }
+
+    public void setListts(Long listts) {
+        this.listts = listts;
+    }
+
+    public Boolean getIconDownloaded() {
+        return iconDownloaded;
+    }
+
+    public void setIconDownloaded(Boolean iconDownloaded) {
+        this.iconDownloaded = iconDownloaded;
+    }
+
+    public Boolean getApkDownloaded() {
+        return apkDownloaded;
+    }
+
+    public void setApkDownloaded(Boolean apkDownloaded) {
+        this.apkDownloaded = apkDownloaded;
+    }
+
+    public Long getApkts() {
+        return apkts;
+    }
+
+    public void setApkts(Long apkts) {
+        this.apkts = apkts;
     }
 
 }

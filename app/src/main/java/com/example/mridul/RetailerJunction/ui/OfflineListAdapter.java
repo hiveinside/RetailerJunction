@@ -42,7 +42,7 @@ public class OfflineListAdapter extends ArrayAdapter<AppInfoObject> {
         ImageView icon = (ImageView) one_row.findViewById(R.id.appIcon);
 
 
-        File imgFile = new File(RetailerApplication.getIconDir() + appInfo.packageName + ".PNG");
+        File imgFile = new File(RetailerApplication.getIconDir() + appInfo.packageName + ".png");
         if(imgFile.exists()) {
             icon.setImageURI(Uri.fromFile(imgFile));
         }

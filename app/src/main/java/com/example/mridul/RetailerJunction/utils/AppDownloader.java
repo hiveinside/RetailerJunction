@@ -35,63 +35,129 @@ public class AppDownloader {
         fragment = offlineAppsFragment;
     }
 
-    public void download(String APK_DIR, List<CloudAppDetails> dList) {
+    public void download(List<CloudAppDetails> dList) {
+
+        String APK_DIR = RetailerApplication.getApkDir();
+        String ICON_DIR = RetailerApplication.getIconDir();
 
         this.downloadList = dList;
 
-        /*
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        DaoMaster daoMaster = new DaoMaster(db);
-        DaoSession daoSession = daoMaster.newSession();
-        CloudAppDetailsDao appEntryDao = daoSession.getCloudAppDetailsDao();
+        final FileDownloadQueueSet iconQueueSet = new FileDownloadQueueSet(mIconDownloadListener);
+        final FileDownloadQueueSet apkQueueSet = new FileDownloadQueueSet(mApkDownloadListener);
 
-        List<CloudAppDetails> cd = appEntryDao.loadAll();
-        */
-
-        final FileDownloadQueueSet queueSet = new FileDownloadQueueSet(mFileDownloadListener);
-
-        final List<BaseDownloadTask> tasks = new ArrayList<>();
+        final List<BaseDownloadTask> apktasks = new ArrayList<>();
+        final List<BaseDownloadTask> icontasks = new ArrayList<>();
         for (int i = 0; i < downloadList.size(); i++) {
-            final String link = downloadList.get(i).getDownloadurl();
-            final String destFile = APK_DIR + downloadList.get(i).getPackagename() + ".tmp"; // dont add .apk till completed + ".apk";
-            Log.d(TAG, "download link : " + link + " " + destFile);
+            final String apklink = downloadList.get(i).getDownloadurl();
+            final String destApkFile = APK_DIR + downloadList.get(i).getPackagename() + ".tmp"; // dont add .apk till completed + ".apk";
+            Log.d(TAG, "download apklink : " + apklink + " " + destApkFile);
 
-            tasks.add(FileDownloader.getImpl().create(link).setPath(destFile).setListener(mFileDownloadListener).setTag(downloadList.get(i)));
+            final String iconlink = downloadList.get(i).getIconurl();
+            final String destIconFile = ICON_DIR + downloadList.get(i).getPackagename() + ".tmp"; // dont add .png till completed + ".png";
+            Log.d(TAG, "download iconlink : " + iconlink + " " + destIconFile);
+
+            icontasks.add(FileDownloader.getImpl().create(iconlink).setPath(destIconFile).setListener(mIconDownloadListener).setTag(downloadList.get(i)));
+            apktasks.add(FileDownloader.getImpl().create(apklink).setPath(destApkFile).setListener(mApkDownloadListener).setTag(downloadList.get(i)));
         }
         //queueSet.disableCallbackProgressTimes(); // do not want each task's download progress's callback,
         // we just consider which task will completed.
 
-        // auto retry 1 time if download fail
-        queueSet.setAutoRetryTimes(1);
+        iconQueueSet.setAutoRetryTimes(1);
+        iconQueueSet.downloadSequentially(icontasks);
+        iconQueueSet.start();
 
-        // start download in serial order
-        queueSet.downloadSequentially(tasks);
-
-        queueSet.start();
+        apkQueueSet.setAutoRetryTimes(1);
+        apkQueueSet.downloadSequentially(apktasks);
+        apkQueueSet.start();
     }
 
-    final FileDownloadListener mFileDownloadListener = new FileDownloadListener() {
+    final FileDownloadListener mIconDownloadListener = new FileDownloadListener() {
         @Override
         protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "download pending : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+            Log.d(TAG, "icon download pending : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
         }
 
         @Override
         protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            //Log.d(TAG, "download progress : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+            Log.d(TAG, "icon download progress : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+        }
+
+        @Override
+        protected void blockComplete(BaseDownloadTask task) {
+            Log.d(TAG, "icon download blockComplete : " + task.getPath());
+        }
+
+        @Override
+        protected void completed(BaseDownloadTask task) {
+            Log.d(TAG, "icon download completed : " + task.getPath());
+
+            // rename to .png
+            String currentName = task.getPath();
+            File from = new File(currentName);
+            File to = new File(FilenameUtils.removeExtension(currentName) + ".png");
+
+            from.renameTo(to);
+            //FileUtils.copyFile(from, to);
+
+            // update database - mark downloaded, apkts
+            // write to database
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(RetailerApplication.getRJContext(), Constants.DB_NAME, null);
+            SQLiteDatabase db = helper.getWritableDatabase();
+            DaoMaster daoMaster = new DaoMaster(db);
+            DaoSession daoSession = daoMaster.newSession();
+            CloudAppDetailsDao appEntryDao = daoSession.getCloudAppDetailsDao();
+
+            //get record
+            long campaignId = ((CloudAppDetails) task.getTag()).getCampaignId();
+            CloudAppDetails c = appEntryDao.queryBuilder().where(CloudAppDetailsDao.Properties.CampaignId.eq(campaignId)).limit(1).unique();
+
+            if (c != null) {
+                c.setIconDownloaded(true);
+                appEntryDao.insertOrReplace(c);
+            }
+            db.close();
+        }
+
+        @Override
+        protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            Log.d(TAG, "icon download paused : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+        }
+
+        @Override
+        protected void error(BaseDownloadTask task, Throwable e) {
+            Log.d(TAG, "icon download error : " + task.getPath() + " Exception " + e);
+
+            // pause/stop rest of the queue
+            FileDownloader.getImpl().pause(mIconDownloadListener);
+        }
+
+        @Override
+        protected void warn(BaseDownloadTask task) {
+            Log.d(TAG, "icon download warn : " + task.getPath());
+        }
+    };
+
+    final FileDownloadListener mApkDownloadListener = new FileDownloadListener() {
+        @Override
+        protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            //Log.d(TAG, "apk download pending : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+        }
+
+        @Override
+        protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            //Log.d(TAG, "apk download progress : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
             fragment.onApkDownloadProgress(task, soFarBytes, totalBytes);
 
         }
 
         @Override
         protected void blockComplete(BaseDownloadTask task) {
-            Log.d(TAG, "download blockComplete : " + task.getPath());
+            //Log.d(TAG, "apk download blockComplete : " + task.getPath());
         }
 
         @Override
         protected void completed(BaseDownloadTask task) {
-            Log.d(TAG, "download completed : " + task.getPath());
+            Log.d(TAG, "apk download completed : " + task.getPath());
 
             // match checksum, delete if doesnt match
             // match with what was sent from cloud
@@ -117,8 +183,9 @@ public class AppDownloader {
             long campaignId = ((CloudAppDetails) task.getTag()).getCampaignId();
             CloudAppDetails c = appEntryDao.queryBuilder().where(CloudAppDetailsDao.Properties.CampaignId.eq(campaignId)).limit(1).unique();
 
-            if (c != null) {
-                c.setDownloaded(true);
+            if (c != null && c.getIconDownloaded() == true) {
+
+                c.setApkDownloaded(true);
                 c.setApkts(System.currentTimeMillis());
 
                 appEntryDao.insertOrReplace(c);
@@ -132,7 +199,7 @@ public class AppDownloader {
 
         @Override
         protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "download paused : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+            //Log.d(TAG, "download paused : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
         }
 
         @Override
@@ -143,7 +210,7 @@ public class AppDownloader {
             fragment.onApkDownloadError(task);
 
             // pause/stop rest of the queue
-            FileDownloader.getImpl().pause(mFileDownloadListener);
+            FileDownloader.getImpl().pause(mApkDownloadListener);
         }
 
         @Override

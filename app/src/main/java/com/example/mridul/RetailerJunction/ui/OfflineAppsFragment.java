@@ -235,7 +235,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         // download if there is anything to download.
         if (downloadList.size() > 0) {
             AppDownloader ad = new AppDownloader(this);
-            ad.download(RetailerApplication.getApkDir(), downloadList);
+            ad.download(downloadList);
         } else {
             UpdateUI(null, NOTHINGTODOWNLOAD);
         }

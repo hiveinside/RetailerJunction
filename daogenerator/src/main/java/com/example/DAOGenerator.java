@@ -8,7 +8,7 @@ public class DAOGenerator {
 
 
     public static void main(String args[]) throws Exception {
-        Schema schema = new Schema(15, "com.example.mridul.RetailerJunction.daogenerator.model");
+        Schema schema = new Schema(16, "com.example.mridul.RetailerJunction.daogenerator.model");
 
         /*
          * Table to store current available list from cloud
@@ -23,15 +23,16 @@ public class DAOGenerator {
         appDetails.addStringProperty("checksum");
         appDetails.addIntProperty("state");
         appDetails.addIntProperty("minsdk");
+        appDetails.addStringProperty("iconurl");
+        appDetails.addStringProperty("category");
+        appDetails.addStringProperty("desc");
+        appDetails.addFloatProperty("rating");
 
         appDetails.addLongProperty("listts"); // ts of entry/update into DB
-        appDetails.addBooleanProperty("downloaded"); // downloaded?
+        appDetails.addBooleanProperty("iconDownloaded"); // downloaded?
+        appDetails.addBooleanProperty("apkDownloaded"); // downloaded?
         appDetails.addLongProperty("apkts"); // ts of apk download
 
-        appDetails.addStringProperty("iconurl"); // ts of apk download
-        appDetails.addStringProperty("category"); // ts of apk download
-        appDetails.addStringProperty("desc"); // ts of apk download
-        appDetails.addFloatProperty("rating"); // ts of apk download
 
         /*
          * Table to store current download status
