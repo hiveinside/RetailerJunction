@@ -221,6 +221,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         for( i=0; i<dbCloudAppsList.size(); i++) {
             for( j=0; j<appsList.size(); j++) {
                 if ( appsList.get(j).campaignId == dbCloudAppsList.get(i).getCampaignId()) {
+                    // // TODO: 6/23/2016 check this.. it may be better to check in DB than in appslist 
                     // found in appslist.. already downloaded
                     break;
                 }
@@ -258,12 +259,25 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
     }
 
     @Override
+    public void onIconDownloadCompleted(BaseDownloadTask task) {
+
+        // Refresh appsList datastructure -  this will reparse the apks
+        AppsList a = new AppsList(getActivity());
+
+        // Refresh UI
+        if (mListAdapter != null) {
+            mListAdapter.notifyDataSetChanged();
+        }
+
+        //update UI
+        UpdateUI(task, APKCOMPLETED);
+    }
+
+    @Override
     public void onApkDownloadCompleted(BaseDownloadTask task) {
 
         // Refresh appsList datastructure -  this will reparse the apks
         AppsList a = new AppsList(getActivity());
-        String filename = ((CloudAppDetails) task.getTag()).getPackagename() + ".apk";
-        //a.addToList(campaignId, filename);
 
         // Refresh UI
         if (mListAdapter != null) {

@@ -74,7 +74,7 @@ public class AppDownloader {
     final FileDownloadListener mIconDownloadListener = new FileDownloadListener() {
         @Override
         protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "icon download pending : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+            //Log.d(TAG, "icon download pending : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
         }
 
         @Override
@@ -84,7 +84,7 @@ public class AppDownloader {
 
         @Override
         protected void blockComplete(BaseDownloadTask task) {
-            Log.d(TAG, "icon download blockComplete : " + task.getPath());
+            //Log.d(TAG, "icon download blockComplete : " + task.getPath());
         }
 
         @Override
@@ -120,7 +120,7 @@ public class AppDownloader {
 
         @Override
         protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            Log.d(TAG, "icon download paused : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
+            //Log.d(TAG, "icon download paused : " + task.getPath() + " sofar " + soFarBytes + " TotalBytes : " + totalBytes);
         }
 
         @Override
@@ -220,6 +220,8 @@ public class AppDownloader {
     };
 
     public interface AppDownloadCallback {
+        public void onIconDownloadCompleted(BaseDownloadTask task);
+
         public void onApkDownloadCompleted(BaseDownloadTask task);
 
         public void onApkDownloadError(BaseDownloadTask task);

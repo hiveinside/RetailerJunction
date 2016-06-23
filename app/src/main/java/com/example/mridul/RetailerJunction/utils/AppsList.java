@@ -51,7 +51,8 @@ public class AppsList extends Application {
 
             for (int i=0; i<cd.size(); i++) {
                 // if downloaded already
-                if ((cd.get(i).getApkDownloaded() == true)) {
+                if ( cd.get(i).getApkDownloaded() == true &&
+                     cd.get(i).getIconDownloaded() == true ) {
                     AppInfoObject a = getAppDetail(context, cd.get(i));
 
                     if(a != null) {
