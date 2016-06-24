@@ -14,9 +14,8 @@ import android.widget.TextView;
 import com.example.mridul.RetailerJunction.utils.AppInfoObject;
 import com.example.mridul.helloworld.R;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -58,10 +57,11 @@ public class OfflineListAdapter extends ArrayAdapter<AppInfoObject> {
         TextView detail = (TextView) one_row.findViewById(R.id.appDetail);
 
         Drawable image = context.getResources().getDrawable(getRatingDrawable(appInfo.rating));
-        image.setBounds( 0, 0, image.getIntrinsicWidth()/3, image.getIntrinsicHeight()/3 );
-        detail.setCompoundDrawables( image, null, null, null );
-
-        detail.setText(" (" + FileUtils.byteCountToDisplaySize(appInfo.size) + ")");
+        if (image != null) {
+            image.setBounds(0, 0, image.getIntrinsicWidth()/3, image.getIntrinsicHeight()/3);
+            detail.setCompoundDrawables(image, null, null, null);
+        }
+        detail.setText(" (" + bytesToHuman(appInfo.size) + ")");
 
         return one_row;
     }
@@ -90,4 +90,31 @@ public class OfflineListAdapter extends ArrayAdapter<AppInfoObject> {
 
         return id;
     }
+
+    public static String floatForm (double d)
+    {
+        return new DecimalFormat("#.#").format(d);
+    }
+
+    public static String bytesToHuman (long size)
+    {
+        long Kb = 1  * 1024;
+        long Mb = Kb * 1024;
+        long Gb = Mb * 1024;
+        long Tb = Gb * 1024;
+        long Pb = Tb * 1024;
+        long Eb = Pb * 1024;
+
+        if (size <  Kb)                 return floatForm(        size     ) + " byte";
+        if (size >= Kb && size < Mb)    return floatForm((double)size / Kb) + " KB";
+        if (size >= Mb && size < Gb)    return floatForm((double)size / Mb) + " MB";
+        if (size >= Gb && size < Tb)    return floatForm((double)size / Gb) + " GB";
+        if (size >= Tb && size < Pb)    return floatForm((double)size / Tb) + " TB";
+        if (size >= Pb && size < Eb)    return floatForm((double)size / Pb) + " PB";
+        if (size >= Eb)                 return floatForm((double)size / Eb) + " EB";
+
+        return "???";
+    }
+
+
 }
