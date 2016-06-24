@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,8 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
     static final int NOTHINGTODOWNLOAD = 4;
     static final int OFFLINE = 5;
 
+    Toast toast;
+
     int soFarBytes;
     int totalBytes;
 
@@ -73,7 +76,10 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
     };
 
     void ShowToast (String text) {
-        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+        if (toast != null) {
+            toast.setText(text);
+            toast.show();
+        }
     }
 
     @Override
@@ -86,6 +92,8 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         loadAppsListFromDB();
 
         lastSyncTime = PreferencesHelper.getInstance(getActivity()).getLastSync();
+
+        toast = Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT);
 
         return rootView;
     }
@@ -136,7 +144,7 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
             // find the layout
             swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_container);
 
-            ListView listView = (ListView) getActivity().findViewById(R.id.offlinelist);
+            final ListView listView = (ListView) getActivity().findViewById(R.id.offlinelist);
 
             // popualate existing list.
             listView.setAdapter(new OfflineListAdapter(getActivity().getApplicationContext(), R.layout.list_item, getExistingApps()));
@@ -183,6 +191,14 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
                         enable = firstItemVisible && topOfFirstItemVisible;
                     }
                     swipeRefreshLayout.setEnabled(enable);
+                }
+            });
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    AppInfoObject appInfo = (AppInfoObject)listView.getItemAtPosition(position);
+                    ShowToast(appInfo.desc);
                 }
             });
         }
