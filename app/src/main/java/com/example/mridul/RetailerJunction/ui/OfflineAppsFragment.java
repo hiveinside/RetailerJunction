@@ -260,14 +260,6 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
     @Override
     public void onIconDownloadCompleted(BaseDownloadTask task) {
 
-        // Refresh appsList datastructure -  this will reparse the apks
-        AppsList a = new AppsList(getActivity());
-
-        // Refresh UI
-        if (mListAdapter != null) {
-            mListAdapter.notifyDataSetChanged();
-        }
-
         //update UI
         UpdateUI(task, APKCOMPLETED);
     }
@@ -275,6 +267,11 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
     @Override
     public void onApkDownloadCompleted(BaseDownloadTask task) {
 
+        //update UI
+        UpdateUI(task, APKCOMPLETED);
+    }
+
+    private void refreshList() {
         // Refresh appsList datastructure -  this will reparse the apks
         AppsList a = new AppsList(getActivity());
 
@@ -282,9 +279,6 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         if (mListAdapter != null) {
             mListAdapter.notifyDataSetChanged();
         }
-
-        //update UI
-        UpdateUI(task, APKCOMPLETED);
     }
 
     @Override
@@ -306,6 +300,8 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
 
         // needed in all cases
         textRight.setText("Apps (" + AppsList.getAppsList().size() + "/" + dbCloudAppsList.size() + ")");
+
+        refreshList();
 
         switch (state){
             case OFFLINE:
