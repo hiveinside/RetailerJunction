@@ -64,14 +64,14 @@ public class HotspotFragment extends Fragment {
                     break;
                 case TURN_OFF_HOTSPOT: //WifiManager.WIFI_STATE_DISABLED:
                     button.setText("Turn ON HotSpot");
-                    button.setBackgroundColor(context.getResources().getColor(R.color.darkgreen));
+                    button.setBackgroundResource(R.drawable.button);
                     break;
                 case TURNING_ON_HOTSPOT: //WifiManager.WIFI_STATE_ENABLING:
                     button.setText("Turning ON...");
                     break;
                 case TURN_ON_HOTSPOT: //WifiManager.WIFI_STATE_ENABLED:
                     button.setText("Turn OFF HotSpot");
-                    button.setBackgroundColor(context.getResources().getColor(R.color.darkred));
+                    button.setBackgroundResource(R.drawable.buttonred);
                     break;
                 case HOTSPOT_ERROR: //WifiManager.WIFI_STATE_ENABLED:
                     button.setText("HotSpot Error. Retry.");
