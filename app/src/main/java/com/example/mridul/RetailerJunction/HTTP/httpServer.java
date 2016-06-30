@@ -136,7 +136,7 @@ public class httpServer extends NanoHTTPD {
             }
 
             // Ack to customer
-            return newFixedLengthResponse("Customer Data submitted");
+            return newFixedLengthResponse("Customer Data stored");
             //return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "Customer Data submitted");
         } else if (Method.GET.equals(method) && parms.get("KIT_APK_LINK") != null) {
 

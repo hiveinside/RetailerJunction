@@ -70,6 +70,7 @@ public class RetailerJunctionActivity extends FragmentActivity implements Action
 
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(mAdapter);
 
         // Adding Tabs

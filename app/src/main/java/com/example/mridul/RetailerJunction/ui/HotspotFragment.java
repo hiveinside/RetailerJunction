@@ -135,6 +135,12 @@ public class HotspotFragment extends Fragment {
         context = getActivity().getApplicationContext();
 
         button.setTag(TURN_OFF_HOTSPOT);
+        try {
+            webserver = new httpServer(context);
+        } catch (IOException e) {
+            ShowToast("Fatal error: HTTP server failed");
+            webserver.stop();
+        }
 
         //button.setOnClickListener(this);
 
@@ -145,79 +151,89 @@ public class HotspotFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mWifiManager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
-                apMgr = WifiApControl.getApControl(mWifiManager, context);
-                Integer tag = (Integer)button.getTag();
-                if (button.getTag() == TURN_OFF_HOTSPOT) {
-
-
-                    if ( AppsList.getAppsList().size() <= 0){
-                        ShowToast("0 Offline apps");
-                        return;
-                    }
-
-                    wasWiFiEnabled = mWifiManager.isWifiEnabled();
-                    mWifiManager.setWifiEnabled(false);
-
-                    //Start hotspot - without user config.
-                    boolean result = apMgr.enable(false, context);
-                    if (result == true) {
-
-                        wifiConfiguration = apMgr.getWifiApConfiguration();
-                        // Start webserver
-                        try {
-                            webserver = new httpServer(context);
-                            webserver.start();
-                        } catch (IOException ioe) {
-                            button.setTag(TURN_OFF_HOTSPOT);
-                            ShowToast("HTTP server failed. Retry");
-                            webserver.stop();
-                        }
-                    } else {
-                        button.setTag(TURN_OFF_HOTSPOT);
-                        wifiConfiguration = null;
-                        ShowToast("HotSpot failed. Retry");
-                    }
-
-                } else if (button.getTag() == TURN_ON_HOTSPOT) {
-                    webserver.stop(); // Stop hotspot
-                    apMgr.disable(); // Stop webserver
-                    wifiConfiguration = null;
-                }
-
-                //updateUI();
+                startHotSpot();
             }
         });
     }
+
+    private void startHotSpot() {
+        mWifiManager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
+        apMgr = WifiApControl.getApControl(mWifiManager, context);
+
+        if (button.getTag() == TURN_OFF_HOTSPOT) {
+
+            webserver.stop();
+
+            if ( AppsList.getAppsList().size() <= 0){
+                ShowToast("0 Offline apps");
+                return;
+            }
+            button.setTag(TURNING_ON_HOTSPOT);
+            updateUI();
+
+            wasWiFiEnabled = mWifiManager.isWifiEnabled();
+            mWifiManager.setWifiEnabled(false);
+
+            //Start hotspot - without user config.
+            boolean result = apMgr.enable(false, context);
+            if (result == true) {
+
+                wifiConfiguration = apMgr.getWifiApConfiguration();
+                // Start webserver
+                try {
+                    webserver.start();
+                } catch (IOException ioe) {
+                    button.setTag(TURN_OFF_HOTSPOT);
+                    ShowToast("HTTP server failed. Retry");
+                    webserver.stop();
+                }
+            } else {
+                button.setTag(TURN_OFF_HOTSPOT);
+                wifiConfiguration = null;
+                ShowToast("HotSpot failed. Retry");
+            }
+
+        } else if (button.getTag() == TURN_ON_HOTSPOT) {
+            webserver.stop(); // Stop hotspot
+            apMgr.disable(); // Stop webserver
+            wifiConfiguration = null;
+        }
+    }
+
     public static class WifiReceiver extends BroadcastReceiver {
 
         //ConnectionMonitor
         @Override
         public void onReceive(Context context, Intent intent) {
             int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+            int tag = HOTSPOT_ERROR;
 
             switch (state) {
-                case 10: //WifiManager.WIFI_STATE_DISABLING:
-                    button.setTag(TURNING_OFF_HOTSPOT);
+                case (10 + WifiManager.WIFI_STATE_DISABLING):
+                    tag = TURNING_OFF_HOTSPOT;
                     break;
-                case 11: //WifiManager.WIFI_STATE_DISABLED:
-                    button.setTag(TURN_OFF_HOTSPOT);
+                case (10 + WifiManager.WIFI_STATE_DISABLED):
+                    tag = TURN_OFF_HOTSPOT;
 
                     if (wasWiFiEnabled == true) {
                         mWifiManager.setWifiEnabled(true);
                     }
                     break;
-                case 12: //WifiManager.WIFI_STATE_ENABLING:
-                    button.setTag(TURNING_ON_HOTSPOT);
+                case (10 + WifiManager.WIFI_STATE_ENABLING):
+                    tag = TURNING_ON_HOTSPOT;
                     break;
-                case 13: //WifiManager.WIFI_STATE_ENABLED:
-                    button.setTag(TURN_ON_HOTSPOT);
+                case (10 + WifiManager.WIFI_STATE_ENABLED):
+                    tag = TURN_ON_HOTSPOT;
                     break;
                 default:
-                    button.setTag(HOTSPOT_ERROR);
+                    tag = HOTSPOT_ERROR;
                     break;
             }
-            updateUI();
+
+            if (button != null) {
+                button.setTag(tag);
+                updateUI();
+            }
         }
     }
 
