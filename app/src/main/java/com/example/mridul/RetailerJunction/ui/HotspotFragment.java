@@ -120,6 +120,11 @@ public class HotspotFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (LoginUtils.isLoggedIn(getActivity()) == true) {
+                    //End Point: http://retail.xapi.co.in/api/logout
+                    //Method: POST
+                    //Parameters: token=<token>
+                    LoginUtils.doServerLogout(PreferencesHelper.getInstance(getActivity()).getToken());
+
                     PreferencesHelper.getInstance(getActivity()).saveToken(""); // reset auth token
                     PreferencesHelper.getInstance(getActivity()).saveLoginState(false); // reset login state
                     PreferencesHelper.getInstance(getActivity()).saveWeekIncome(""); // reset income report

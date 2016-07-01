@@ -11,6 +11,7 @@ public class Constants {
     //public static final String APPSLIST_API_URL = "http://192.168.1.70:8080/retail/public/api/v1/apps";
     public static final String APPSLIST_API_URL = "http://retail.xapi.co.in/api/v1/apps";
     public static final String APPSLIST_LOGIN_URL = "http://retail.xapi.co.in/api/authenticate";
+    public static final String APPSLIST_LOGOUT_URL = "http://retail.xapi.co.in/api/logout";
     public static final String UPLOADDATA_API_URL = "http://retail.xapi.co.in/api/events?token=";
 
     /*

@@ -16,12 +16,17 @@
         android:layout_weight="2"
         android:orientation="vertical">
 
-        <TableLayout
-            android:stretchColumns="*"
-            android:id="@+id/uploadTable"
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </TableLayout>
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+            <TableLayout
+                android:stretchColumns="*"
+                android:id="@+id/uploadTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TableLayout>
+        </ScrollView>
     </LinearLayout>
 
     <LinearLayout
@@ -30,13 +35,16 @@
         android:layout_width="match_parent"
         android:layout_weight="2">
 
-        <TableLayout
-            android:stretchColumns="*"
-            android:id="@+id/incomeTable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </TableLayout>
-
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            <TableLayout
+                android:stretchColumns="*"
+                android:id="@+id/incomeTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TableLayout>
+        </ScrollView>
     </LinearLayout>
 
 </LinearLayout>

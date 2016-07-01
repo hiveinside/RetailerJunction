@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -68,7 +69,7 @@ public class ConsoleFragment extends Fragment {
         rowHeader.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                 TableLayout.LayoutParams.WRAP_CONTENT));
 
-        String[] headerText = {"IMEI", "Model", "Uploaded"};
+        String[] headerText = {"Date", "IMEI", "Model", "\u21e7"};
         for (String c : headerText) {
             TextView tv = new TextView(getActivity());
             tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
@@ -132,12 +133,13 @@ public class ConsoleFragment extends Fragment {
             Gson gson = new Gson();
             record = gson.fromJson(json_data, type);
 
-            String imei = record.deviceDetails.imei;
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(installRecordsList.get(i).getTimestamp());
+            String imei = ".." + record.deviceDetails.imei.substring(record.deviceDetails.imei.length() - 4);
             String model = record.deviceDetails.model;
-            String uploaded = (installRecordsList.get(i).getIsUploaded()==0)?"No":"Yes";
+            String uploaded = (installRecordsList.get(i).getIsUploaded()==0)?"\u2717":"\u2713";
 
 
-            String[] colText = {imei, model, uploaded};
+            String[] colText = {date, imei, model, uploaded};
 
             TableRow row = new TableRow(getActivity());
             row.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
