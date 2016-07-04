@@ -2,6 +2,8 @@ package com.example.mridul.RetailerJunction.ui;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import com.liulishuo.filedownloader.FileDownloader;
 
 /**
@@ -13,6 +15,8 @@ public class RetailerApplication extends Application {
     public void onCreate() {
         super.onCreate();
         FileDownloader.init(getApplicationContext());
+
+        Fabric.with(this, new Crashlytics());
     }
 
     static RetailerJunctionActivity mRetailerJunction;

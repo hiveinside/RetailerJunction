@@ -1,4 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
     compileSdkVersion 22
@@ -36,4 +41,20 @@ dependencies {
     compile 'org.apache.commons:commons-io:1.3.2'
     compile 'de.greenrobot:greendao:2.1.0'
     compile 'de.greenrobot:greendao-generator:2.1.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.0@aar') {
+        transitive = true;
+    }
+}
+
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        // The Fabric Gradle plugin uses an open ended version to react
+        // quickly to Android tooling updates
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
 }
