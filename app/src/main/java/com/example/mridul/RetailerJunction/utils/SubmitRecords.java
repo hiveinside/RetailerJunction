@@ -11,15 +11,10 @@ import com.example.mridul.RetailerJunction.daogenerator.model.InstallRecordsDao;
 import com.example.mridul.RetailerJunction.helpers.PreferencesHelper;
 import com.example.mridul.RetailerJunction.ui.RetailerApplication;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -48,33 +43,48 @@ public class SubmitRecords extends AsyncTask<Void, Void, Boolean> {
             installRecordsList = installRecordsDao.loadAll();
         }
 
+        String auth_token = PreferencesHelper.getInstance(RetailerApplication.getRJContext()).getToken();
+        String urlString = Constants.UPLOADDATA_API_URL + auth_token;
         for (int i=0; i<installRecordsList.size(); i++) {
 
             if (installRecordsList.get(i).getIsUploaded() == 0) {
 
                 try {
-                    String auth_token = PreferencesHelper.getInstance(RetailerApplication.getRJContext()).getToken();
-
                     if (auth_token == null){
                         return null;
                     }
-
-                    String URL = Constants.UPLOADDATA_API_URL + auth_token;
-                    HttpPost httpPost = new HttpPost(URL);
-                    HttpClient client = new DefaultHttpClient();
-
+                    URL submitURL = new URL(urlString);
+                    String postData = "values=" + installRecordsList.get(i).getJson_data();
                     Log.e("SubmitRecordsTask", installRecordsList.get(i).getJson_data());
-                    ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-                    postParameters.add(new BasicNameValuePair("values", installRecordsList.get(i).getJson_data()));
 
-                    //httpPost.setEntity(new StringEntity(obj.toString()));
-                    httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
+                    HttpURLConnection conn = (HttpURLConnection) submitURL.openConnection();
+                    conn.setReadTimeout(10000);
+                    conn.setConnectTimeout(15000);
+                    conn.setRequestMethod("POST");
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    conn.setRequestProperty("Content-type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setRequestProperty("charset", "utf-8");
+                    conn.setRequestProperty("Content-Length", String.valueOf(postData.length()));
+                    conn.setUseCaches(false);
+                    conn.setRequestProperty("Connection", "close");
 
+                    byte[] postDataBytes = postData.getBytes("UTF-8");
+                    conn.getOutputStream().write(postDataBytes);
 
-                    HttpResponse response = client.execute(httpPost);
-                    if (response.getStatusLine().getStatusCode() != 200) {
+                    int responseCode = conn.getResponseCode();
+
+                    String response = "";
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response += line;
+                    }
+
+                    Log.e("submitCustData", response);
+                    if (responseCode != HttpURLConnection.HTTP_OK) {
                         Log.e("Submit data Failed: ", response.toString());
-                        //return false;
                         continue;
                     }
 
