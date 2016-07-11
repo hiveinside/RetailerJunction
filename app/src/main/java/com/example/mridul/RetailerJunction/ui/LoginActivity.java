@@ -70,8 +70,8 @@ public class LoginActivity extends AppCompatActivity {
                 String username = username_field.getText().toString();
                 String password = password_field.getText().toString();
 
-                if (username == null || password == null) {
-                    ShowToast("Wrong username or password");
+                if (username.isEmpty() || password.isEmpty()) {
+                    ShowToast("Please enter username/password");
                     return;
                 }
                 showProgress(true);
