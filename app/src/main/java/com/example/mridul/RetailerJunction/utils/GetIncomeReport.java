@@ -86,7 +86,10 @@ public class GetIncomeReport extends AsyncTask<Void, Void, List<IncomeReportObje
             // write to sharedprefs
             PreferencesHelper.getInstance(mContext).saveWeekIncome(incomeRecords.toString());
 
-
+        } catch (org.json.JSONException ex) {
+            // ignore
+            PreferencesHelper.getInstance(mContext).saveWeekIncome("");
+            return null;
 
         } catch(Exception ex) {
             Log.e("Fetch income Failed", ex.getMessage());

@@ -63,8 +63,7 @@ public class SubmitRecords extends AsyncTask<Void, Void, Boolean> {
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
-                    conn.setRequestProperty("Content-type", "application/json");
-                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     conn.setRequestProperty("charset", "utf-8");
                     conn.setRequestProperty("Content-Length", String.valueOf(postData.length()));
                     conn.setUseCaches(false);
