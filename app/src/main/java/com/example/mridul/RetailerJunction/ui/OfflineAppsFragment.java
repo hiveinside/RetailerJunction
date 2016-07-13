@@ -314,10 +314,10 @@ public class OfflineAppsFragment extends Fragment implements CloudAppsList.Cloud
         TextView textLeft = (TextView) getActivity().findViewById(R.id.infoLeft);
         TextView textRight = (TextView) getActivity().findViewById(R.id.infoRight);
 
+        refreshList();
+
         // needed in all cases
         textRight.setText("Apps (" + AppsList.getAppsList().size() + "/" + dbCloudAppsList.size() + ")");
-
-        refreshList();
 
         switch (state){
             case OFFLINE:
